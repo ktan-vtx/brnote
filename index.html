@@ -536,6 +536,215 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* Floating Menu Button (Top Left) */
+    .menu-toggle-btn {
+      position: fixed;
+      top: 16px;
+      left: 24px;
+      width: 36px;
+      height: 36px;
+      background-color: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
+
+    .menu-toggle-btn:hover {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      transform: scale(1.05);
+    }
+
+    .menu-toggle-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .menu-toggle-btn.hidden {
+      transform: translateY(-60px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .menu-toggle-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--toolbar-border);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .menu-toggle-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Slide-out Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2);
+      z-index: 990;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px;
+      font-family: var(--font-sans);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      z-index: 980;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed var(--toolbar-border);
+      padding-bottom: 12px;
+    }
+
+    .sidebar-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .new-note-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .new-note-btn:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .sidebar-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 4px;
+    }
+
+    .sidebar-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      position: relative;
+      font-size: 13px;
+    }
+
+    .sidebar-item:hover {
+      background: var(--toolbar-border);
+      color: var(--text-primary);
+    }
+
+    .sidebar-item.active {
+      background: rgba(var(--accent-rgb), 0.15);
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    .sidebar-item-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 8px;
+    }
+
+    .sidebar-item-delete {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      opacity: 0;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-item:hover .sidebar-item-delete {
+      opacity: 1;
+    }
+
+    .sidebar-item-delete:hover {
+      background: #ef4444;
+      color: white;
+    }
+
     /* --- Speech & Status Indicator --- */
     .recording-pulse {
       position: absolute;
@@ -1038,6 +1247,62 @@
       opacity: 1;
     }
 
+    /* Mobile Responsive Optimizations */
+    @media (max-width: 600px) {
+      .column-row {
+        flex-direction: column !important;
+        gap: 12px;
+      }
+      .column-cell {
+        width: 100% !important;
+      }
+      .column-divider {
+        display: none !important;
+      }
+      
+      /* Toolbar adjustments for smaller touch screens */
+      .toolbar-wrapper {
+        padding: 8px 10px;
+      }
+      .toolbar {
+        padding: 4px 10px;
+        gap: 4px;
+        overflow-x: auto;
+        border-radius: 20px;
+        max-width: 90%;
+      }
+      
+      /* Hide scrollbar of scrollable toolbars on mobile */
+      .toolbar::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .stats-bar {
+        bottom: 8px;
+        right: 12px;
+      }
+      .toolbar-toggle-handle {
+        top: 8px;
+        right: 12px;
+      }
+      .menu-toggle-btn {
+        top: 8px;
+        left: 12px;
+      }
+      
+      .main-container {
+        padding: 70px 12px 30px;
+      }
+      
+      /* Disable floating image text wrapping on narrow screens */
+      .image-block.align-left, 
+      .image-block.align-right {
+        float: none !important;
+        margin: 16px 0 !important;
+        width: 100% !important;
+      }
+    }
+
     /* Resizable Image block and handles */
     .image-block {
       position: relative;
@@ -1141,6 +1406,27 @@
        data-saved-height="1.6" 
        data-saved-bold="false">
   </div>
+
+  <!-- Floating Menu Button (Top Left) -->
+  <button class="menu-toggle-btn" id="menu-toggle" onclick="toggleSidebar()" data-tooltip="ノート一覧" title="ノート一覧" aria-label="メニュー">
+    <svg viewBox="0 0 24 24">
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+    </svg>
+  </button>
+
+  <!-- Slide-out Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>マイノート</h3>
+      <button class="new-note-btn" onclick="createNewNote()">＋ 新規メモ</button>
+    </div>
+    <div class="sidebar-list" id="sidebar-list">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
   <!-- Floating Info Button (Bottom Left) -->
   <button class="info-btn" id="info-btn" onclick="openHelpModal()" data-tooltip="ヘルプ/情報" title="ヘルプ/情報" aria-label="情報">
@@ -1486,6 +1772,17 @@
       });
     }
 
+    function deleteDBValue(key) {
+      return new Promise((resolve) => {
+        if (!db) return resolve();
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(key);
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+      });
+    }
+
     // Debouncing utility for saves
     function debounce(func, delay) {
       let timeoutId;
@@ -1519,7 +1816,9 @@
       lineHeight: 1.6,
       bold: false,
       toolbarPinned: true,
-      fullWidth: true // Default to true as user requested full screen layout
+      fullWidth: true, // Default to true as user requested full screen layout
+      currentNoteId: null,
+      notesList: [] // [{ id, title, updatedAt }]
     };
 
     // --- Bootstrapping & Setup ---
@@ -1536,16 +1835,85 @@
       await loadConfigFromStorage();
       applyAllStyles();
       
-      // 3. Load Saved Editor Contents
-      let savedContent = null;
+      // 3. Load Saved Editor Contents (Multiple Notes Support)
+      let currentId = null;
+      let notesList = null;
+
       if (db) {
-        savedContent = await getDBValue('brnote_content');
+        currentId = await getDBValue('brnote_current_id');
+        notesList = await getDBValue('brnote_notes_list');
       } else {
-        savedContent = localStorage.getItem('brnote_content');
+        currentId = localStorage.getItem('brnote_current_id');
+        const listStr = localStorage.getItem('brnote_notes_list');
+        if (listStr) notesList = JSON.parse(listStr);
       }
 
-      if (savedContent) {
-        editor.innerHTML = savedContent;
+      state.notesList = notesList || [];
+      state.currentNoteId = currentId;
+
+      // A. Migration logic for old single note users
+      let oldContent = null;
+      if (db) {
+        oldContent = await getDBValue('brnote_content');
+      } else {
+        oldContent = localStorage.getItem('brnote_content');
+      }
+
+      if (oldContent) {
+        const oldId = Date.now().toString();
+        const migratedNote = {
+          id: oldId,
+          title: '最初のメモ (移行済み)',
+          updatedAt: Date.now()
+        };
+        state.notesList.push(migratedNote);
+        state.currentNoteId = oldId;
+
+        if (db) {
+          await setDBValue('note_' + oldId, oldContent);
+          await setDBValue('brnote_content', null); // Clear old content
+        } else {
+          localStorage.setItem('note_' + oldId, oldContent);
+          localStorage.removeItem('brnote_content');
+        }
+
+        await saveNotesListToStorage();
+        await saveCurrentNoteIdToStorage();
+      }
+
+      // B. Create a welcome note if no notes exist
+      if (state.notesList.length === 0) {
+        const initialId = Date.now().toString();
+        const initialNote = {
+          id: initialId,
+          title: 'はじめに',
+          updatedAt: Date.now()
+        };
+        state.notesList.push(initialNote);
+        state.currentNoteId = initialId;
+
+        const defaultWelcomeText = `<div><h1>brnote へようこそ！</h1><p>これはあなた専用の美しいスクラッチパッドメモ帳です。左上のメニューボタン（三本線）から、新しいノートを追加して複数管理することができます。</p><p>この文章を消して、自由に書き始めてください！</p></div>`;
+        
+        if (db) {
+          await setDBValue('note_' + initialId, defaultWelcomeText);
+        } else {
+          localStorage.setItem('note_' + initialId, defaultWelcomeText);
+        }
+
+        await saveNotesListToStorage();
+        await saveCurrentNoteIdToStorage();
+      }
+
+      // C. Load active note contents
+      let currentContent = null;
+      if (db) {
+        currentContent = await getDBValue('note_' + state.currentNoteId);
+      } else {
+        currentContent = localStorage.getItem('note_' + state.currentNoteId);
+      }
+
+      if (currentContent) {
+        editor.innerHTML = currentContent;
       } else {
         // Fallback for self-contained baked content (baked via download)
         const bakedContent = `<!-- BAKED_CONTENT_START -->`;
@@ -1553,6 +1921,9 @@
           editor.innerHTML = bakedContent;
         }
       }
+
+      // D. Draw sidebar lists
+      renderSidebarList();
 
       // Ensure all loaded image blocks are draggable
       editor.querySelectorAll('.image-block').forEach(imgBlock => {
@@ -1564,6 +1935,9 @@
 
       // 5. Setup Keybinds
       setupKeybinds();
+
+      // Setup Markdown Auto-Format Assist
+      setupMarkdownAutoFormat();
 
       // 6. Generate Bookmarklet
       generateBookmarklet();
@@ -1626,12 +2000,194 @@
       generateBookmarklet();
     }
 
-    async function saveContent() {
+    async function saveNotesListToStorage() {
       if (db) {
-        await setDBValue('brnote_content', editor.innerHTML);
+        await setDBValue('brnote_notes_list', state.notesList);
       } else {
-        localStorage.setItem('brnote_content', editor.innerHTML);
+        localStorage.setItem('brnote_notes_list', JSON.stringify(state.notesList));
       }
+    }
+
+    async function saveCurrentNoteIdToStorage() {
+      if (db) {
+        await setDBValue('brnote_current_id', state.currentNoteId);
+      } else {
+        localStorage.setItem('brnote_current_id', state.currentNoteId);
+      }
+    }
+
+    async function saveContent() {
+      if (!state.currentNoteId) return;
+
+      const content = editor.innerHTML;
+      
+      // 1. Save note body
+      if (db) {
+        await setDBValue('note_' + state.currentNoteId, content);
+      } else {
+        localStorage.setItem('note_' + state.currentNoteId, content);
+      }
+
+      // 2. Extract title (first line of plaintext, max 30 chars)
+      const text = editor.innerText || '';
+      let title = text.trim().split('\n')[0] || '';
+      title = title.substring(0, 30).trim();
+      if (!title || title === '\u00A0' || title.length === 0) {
+        title = '無題のメモ';
+      }
+
+      // 3. Update metadata
+      const noteMeta = state.notesList.find(n => n.id === state.currentNoteId);
+      if (noteMeta) {
+        const titleChanged = noteMeta.title !== title;
+        noteMeta.title = title;
+        noteMeta.updatedAt = Date.now();
+        
+        await saveNotesListToStorage();
+        if (titleChanged) {
+          renderSidebarList();
+        }
+      }
+    }
+
+    // --- Sidebar Navigation & Multiple Notes Logic ---
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    }
+
+    function closeSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    function renderSidebarList() {
+      const listEl = document.getElementById('sidebar-list');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      
+      const sortedList = [...state.notesList].sort((a, b) => b.updatedAt - a.updatedAt);
+
+      sortedList.forEach(note => {
+        const item = document.createElement('div');
+        item.className = 'sidebar-item';
+        if (note.id === state.currentNoteId) {
+          item.classList.add('active');
+        }
+        item.addEventListener('click', () => {
+          loadNote(note.id);
+          closeSidebar();
+        });
+
+        const titleEl = document.createElement('span');
+        titleEl.className = 'sidebar-item-title';
+        titleEl.innerText = note.title || '無題のメモ';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'sidebar-item-delete';
+        delBtn.innerHTML = '×';
+        delBtn.setAttribute('title', 'メモを削除');
+        delBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          deleteNote(note.id);
+        });
+
+        item.appendChild(titleEl);
+        item.appendChild(delBtn);
+        listEl.appendChild(item);
+      });
+    }
+
+    async function createNewNote() {
+      const id = Date.now().toString();
+      const newNote = {
+        id: id,
+        title: '新規メモ',
+        updatedAt: Date.now()
+      };
+
+      state.notesList.push(newNote);
+      state.currentNoteId = id;
+
+      editor.innerHTML = '';
+
+      await saveNotesListToStorage();
+      await saveCurrentNoteIdToStorage();
+      await saveContent();
+
+      renderSidebarList();
+      updateStats();
+      editor.focus();
+      closeSidebar();
+    }
+
+    async function loadNote(id) {
+      if (state.currentNoteId === id) return;
+
+      await saveContent();
+
+      state.currentNoteId = id;
+      await saveCurrentNoteIdToStorage();
+
+      let noteContent = null;
+      if (db) {
+        noteContent = await getDBValue('note_' + id);
+      } else {
+        noteContent = localStorage.getItem('note_' + id);
+      }
+
+      editor.innerHTML = noteContent || '';
+      
+      editor.querySelectorAll('.image-block').forEach(imgBlock => {
+        imgBlock.draggable = true;
+      });
+
+      renderSidebarList();
+      updateStats();
+      editor.focus();
+    }
+
+    async function deleteNote(id) {
+      if (state.notesList.length <= 1) {
+        showToast("最後のメモは削除できません");
+        return;
+      }
+
+      if (!confirm("このメモを削除しますか？")) return;
+
+      state.notesList = state.notesList.filter(n => n.id !== id);
+
+      if (db) {
+        await deleteDBValue('note_' + id);
+      } else {
+        localStorage.removeItem('note_' + id);
+      }
+
+      await saveNotesListToStorage();
+
+      if (state.currentNoteId === id) {
+        state.currentNoteId = state.notesList[0].id;
+        await saveCurrentNoteIdToStorage();
+        
+        let noteContent = null;
+        if (db) {
+          noteContent = await getDBValue('note_' + state.currentNoteId);
+        } else {
+          noteContent = localStorage.getItem('note_' + state.currentNoteId);
+        }
+        editor.innerHTML = noteContent || '';
+        editor.querySelectorAll('.image-block').forEach(imgBlock => {
+          imgBlock.draggable = true;
+        });
+      }
+
+      renderSidebarList();
+      updateStats();
+      showToast("メモを削除しました");
     }
 
     // Debounce database writing to minimize overhead on fast typing
@@ -1673,14 +2229,17 @@
       const chevron = document.getElementById('toggle-chevron');
       const toggle = document.getElementById('toolbar-toggle');
       const infoBtn = document.getElementById('info-btn');
+      const menuBtn = document.getElementById('menu-toggle');
       if (!state.toolbarPinned) {
         toolbarWrapper.classList.add('hidden');
         if (infoBtn) infoBtn.classList.add('hidden');
+        if (menuBtn) menuBtn.classList.add('hidden');
         if (chevron) chevron.style.transform = 'rotate(180deg)';
         if (toggle) toggle.setAttribute('title', "ツールバーを表示");
       } else {
         toolbarWrapper.classList.remove('hidden');
         if (infoBtn) infoBtn.classList.remove('hidden');
+        if (menuBtn) menuBtn.classList.remove('hidden');
         if (chevron) chevron.style.transform = 'rotate(0deg)';
         if (toggle) toggle.setAttribute('title', "ツールバーを隠す");
       }
@@ -1775,15 +2334,18 @@
       if (state.toolbarPinned) return;
       
       const infoBtn = document.getElementById('info-btn');
+      const menuBtn = document.getElementById('menu-toggle');
       // Reveal toolbar when mouse is near the top (top 45px)
       if (e.clientY < 45) {
         toolbarWrapper.classList.remove('hidden');
         if (infoBtn) infoBtn.classList.remove('hidden');
+        if (menuBtn) menuBtn.classList.remove('hidden');
       } else {
         // Hide it if we are not hovering elements inside it
         if (!toolbarWrapper.contains(e.target) && !e.target.classList.contains('toolbar-toggle-handle')) {
           toolbarWrapper.classList.add('hidden');
           if (infoBtn) infoBtn.classList.add('hidden');
+          if (menuBtn) menuBtn.classList.add('hidden');
         }
       }
     }
@@ -2148,6 +2710,81 @@
       });
     }
 
+    // --- Markdown Auto-Format Assist ---
+    function setupMarkdownAutoFormat() {
+      editor.addEventListener('input', (e) => {
+        if (e.inputType !== 'insertText') return;
+
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const node = range.startContainer;
+        
+        if (node.nodeType !== Node.TEXT_NODE) return;
+
+        const text = node.textContent;
+        const caretOffset = range.startOffset;
+        const textBeforeCaret = text.substring(0, caretOffset);
+
+        let blockParent = node.parentElement;
+        while (blockParent && blockParent !== editor && blockParent.style.display !== 'block' && blockParent.tagName !== 'DIV' && blockParent.tagName !== 'P' && blockParent.tagName !== 'LI' && !/^H[1-6]$/.test(blockParent.tagName)) {
+          blockParent = blockParent.parentElement;
+        }
+
+        if (!blockParent || blockParent === editor) return;
+
+        let formatType = null;
+        let patternLength = 0;
+
+        if (textBeforeCaret.startsWith('# ')) {
+          formatType = 'h1';
+          patternLength = 2;
+        } else if (textBeforeCaret.startsWith('## ')) {
+          formatType = 'h2';
+          patternLength = 3;
+        } else if (textBeforeCaret.startsWith('### ')) {
+          formatType = 'h3';
+          patternLength = 4;
+        } else if (textBeforeCaret.startsWith('- ')) {
+          formatType = 'li';
+          patternLength = 2;
+        }
+
+        if (formatType) {
+          const remainingText = text.substring(patternLength);
+          node.textContent = remainingText;
+
+          if (formatType === 'li') {
+            const ul = document.createElement('ul');
+            const li = document.createElement('li');
+            li.innerHTML = remainingText || '<br>';
+            ul.appendChild(li);
+            
+            blockParent.parentElement.replaceChild(ul, blockParent);
+            
+            const newRange = document.createRange();
+            newRange.selectNodeContents(li);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          } else {
+            const heading = document.createElement(formatType);
+            heading.innerHTML = remainingText || '<br>';
+            
+            blockParent.parentElement.replaceChild(heading, blockParent);
+
+            const newRange = document.createRange();
+            newRange.selectNodeContents(heading);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          }
+          
+          saveContentDebounced();
+        }
+      });
+    }
+
     // --- Toast Notifications ---
     function showToast(message) {
       const toast = document.getElementById('toast');
@@ -2358,23 +2995,21 @@
 
     // --- Drag-to-Resize Column & Image Drag Handlers ---
     function setupResizeAndDividerListeners() {
-      // Mouse listeners for dynamic layouts
-      document.addEventListener('mousedown', (e) => {
+      const handleStart = (clientX, target, isTouch) => {
         // 1. Column split divider resizing
-        if (e.target.classList.contains('column-divider')) {
-          e.preventDefault();
-          const divider = e.target;
+        if (target.classList.contains('column-divider')) {
+          const divider = target;
           const row = divider.closest('.column-row');
           const leftCell = divider.previousElementSibling;
           const rightCell = divider.nextElementSibling;
           
-          const startX = e.clientX;
+          const startX = clientX;
           const leftStartWidth = leftCell.getBoundingClientRect().width;
           const rightStartWidth = rightCell.getBoundingClientRect().width;
           const totalWidth = row.getBoundingClientRect().width;
           
-          const onMouseMove = (moveEvent) => {
-            const deltaX = moveEvent.clientX - startX;
+          const onMove = (currentX) => {
+            const deltaX = currentX - startX;
             const leftNewWidth = leftStartWidth + deltaX;
             const rightNewWidth = rightStartWidth - deltaX;
             
@@ -2385,43 +3020,86 @@
               rightCell.style.width = `${rightPercent}%`;
             }
           };
-          
-          const onMouseUp = () => {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-            saveContentDebounced();
-          };
-          
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
+
+          if (isTouch) {
+            const onTouchMove = (moveEvent) => {
+              onMove(moveEvent.touches[0].clientX);
+            };
+            const onTouchEnd = () => {
+              document.removeEventListener('touchmove', onTouchMove);
+              document.removeEventListener('touchend', onTouchEnd);
+              saveContentDebounced();
+            };
+            document.addEventListener('touchmove', onTouchMove, { passive: true });
+            document.addEventListener('touchend', onTouchEnd);
+          } else {
+            const onMouseMove = (moveEvent) => {
+              onMove(moveEvent.clientX);
+            };
+            const onMouseUp = () => {
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+              saveContentDebounced();
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          }
         }
         
         // 2. Image block bottom-right corner resizing
-        if (e.target.classList.contains('image-resize-handle')) {
-          e.preventDefault();
-          const handle = e.target;
+        if (target.classList.contains('image-resize-handle')) {
+          const handle = target;
           const imgBlock = handle.closest('.image-block');
           
-          const startX = e.clientX;
+          const startX = clientX;
           const startWidth = imgBlock.getBoundingClientRect().width;
           const parentWidth = imgBlock.parentElement.getBoundingClientRect().width;
           
-          const onMouseMove = (moveEvent) => {
-            const deltaX = moveEvent.clientX - startX;
+          const onMove = (currentX) => {
+            const deltaX = currentX - startX;
             const newWidth = Math.max(80, Math.min(parentWidth, startWidth + deltaX));
             imgBlock.style.width = `${newWidth}px`;
           };
-          
-          const onMouseUp = () => {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-            saveContentDebounced();
-          };
-          
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
+
+          if (isTouch) {
+            const onTouchMove = (moveEvent) => {
+              onMove(moveEvent.touches[0].clientX);
+            };
+            const onTouchEnd = () => {
+              document.removeEventListener('touchmove', onTouchMove);
+              document.removeEventListener('touchend', onTouchEnd);
+              saveContentDebounced();
+            };
+            document.addEventListener('touchmove', onTouchMove, { passive: true });
+            document.addEventListener('touchend', onTouchEnd);
+          } else {
+            const onMouseMove = (moveEvent) => {
+              onMove(moveEvent.clientX);
+            };
+            const onMouseUp = () => {
+              document.removeEventListener('mousemove', onMouseMove);
+              document.removeEventListener('mouseup', onMouseUp);
+              saveContentDebounced();
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+          }
+        }
+      };
+
+      document.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('column-divider') || e.target.classList.contains('image-resize-handle')) {
+          e.preventDefault();
+          handleStart(e.clientX, e.target, false);
         }
       });
+
+      document.addEventListener('touchstart', (e) => {
+        if (e.target.classList.contains('column-divider') || e.target.classList.contains('image-resize-handle')) {
+          e.preventDefault();
+          handleStart(e.touches[0].clientX, e.target, true);
+        }
+      }, { passive: false });
 
       // 3. Delegate key and comment edits inside sub-cards to trigger db saves
       editor.addEventListener('input', (e) => {
