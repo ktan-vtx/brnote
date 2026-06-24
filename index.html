@@ -800,6 +800,72 @@
       background: rgba(var(--accent-rgb), 0.2);
     }
 
+    .sidebar-edit-btn {
+      background: transparent;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-edit-btn:hover {
+      background: rgba(var(--accent-rgb), 0.1);
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+    
+    .sidebar-edit-btn.active {
+      background: var(--accent-color);
+      color: white;
+      border-color: var(--accent-color);
+    }
+
+    .sidebar-footer {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--toolbar-border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bulk-delete-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .bulk-delete-btn:hover {
+      background: #dc2626;
+    }
+    
+    .bulk-delete-btn:disabled {
+      background: var(--text-muted);
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .sidebar-item-checkbox {
+      margin-right: 10px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+    }
+
     /* --- Speech & Status Indicator --- */
     .recording-pulse {
       position: absolute;
@@ -1463,12 +1529,18 @@
 
   <!-- Slide-out Sidebar -->
   <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h3>マイノート</h3>
+    <div class="sidebar-header" style="flex-direction: column; align-items: stretch; gap: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <h3 style="margin: 0;">マイノート</h3>
+        <button class="sidebar-edit-btn" onclick="toggleEditMode()" id="sidebar-edit-btn">選択削除</button>
+      </div>
       <button class="new-note-btn" onclick="createNewNote()">＋ 新規メモ</button>
     </div>
     <div class="sidebar-list" id="sidebar-list">
       <!-- Generated via JS -->
+    </div>
+    <div class="sidebar-footer" id="sidebar-footer" style="display: none;">
+      <button class="bulk-delete-btn" onclick="deleteSelectedNotes()" id="bulk-delete-btn" disabled>選択したメモを削除 (0)</button>
     </div>
   </div>
 
@@ -1845,7 +1917,8 @@
     const lhBtn = document.getElementById('lh-btn');
 
     let recognition = null;
-    let isRecording = false;
+    let isEditMode = false;
+    let selectedNoteIds = new Set();
 
     // Config default parameters
     let state = {
@@ -2127,52 +2200,85 @@
         if (note.id === state.currentNoteId) {
           item.classList.add('active');
         }
-        item.addEventListener('click', () => {
-          loadNote(note.id);
-          closeSidebar();
-        });
+
+        // チェックボックス（編集モード時のみ）
+        let checkbox = null;
+        if (isEditMode) {
+          checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'sidebar-item-checkbox';
+          checkbox.checked = selectedNoteIds.has(note.id);
+          checkbox.addEventListener('click', (e) => e.stopPropagation());
+          checkbox.addEventListener('change', () => {
+            if (checkbox.checked) {
+              selectedNoteIds.add(note.id);
+            } else {
+              selectedNoteIds.delete(note.id);
+            }
+            updateBulkDeleteButton();
+          });
+          item.appendChild(checkbox);
+          
+          item.addEventListener('click', () => {
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+          });
+        } else {
+          item.addEventListener('click', () => {
+            loadNote(note.id);
+            closeSidebar();
+          });
+        }
 
         const titleEl = document.createElement('span');
         titleEl.className = 'sidebar-item-title';
         titleEl.innerText = note.title || '無題のメモ';
-
-        const pinBtn = document.createElement('button');
-        pinBtn.className = 'sidebar-item-pin';
-        if (note.pinned) {
-          pinBtn.classList.add('pinned');
-          pinBtn.innerHTML = '📌';
-          pinBtn.setAttribute('title', 'ピン留めを解除');
-        } else {
-          pinBtn.innerHTML = '📍';
-          pinBtn.setAttribute('title', 'ピン留めする');
-        }
-        pinBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          togglePinNote(note.id);
-        });
-
-        const renameBtn = document.createElement('button');
-        renameBtn.className = 'sidebar-item-rename';
-        renameBtn.innerHTML = '✏️';
-        renameBtn.setAttribute('title', '名前を変更');
-        renameBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          renameNote(note.id);
-        });
-
-        const delBtn = document.createElement('button');
-        delBtn.className = 'sidebar-item-delete';
-        delBtn.innerHTML = '×';
-        delBtn.setAttribute('title', 'メモを削除');
-        delBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          deleteNote(note.id);
-        });
-
         item.appendChild(titleEl);
-        item.appendChild(pinBtn);
-        item.appendChild(renameBtn);
-        item.appendChild(delBtn);
+
+        // 編集モード以外なら、ピン・リネーム・削除ボタンを表示
+        if (!isEditMode) {
+          const pinBtn = document.createElement('button');
+          pinBtn.className = 'sidebar-item-pin';
+          pinBtn.innerHTML = `
+            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="${note.pinned ? 'currentColor' : 'none'}" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px;">
+              <line x1="12" y1="17" x2="12" y2="22"></line>
+              <path d="M5 17h14v-1.76a2 2 0 0 0-.44-1.24l-2.78-3.47A2 2 0 0 1 15 9.3V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4.3a2 2 0 0 1-.78 1.23l-2.78 3.5a2 2 0 0 0-.44 1.24z"></path>
+            </svg>
+          `;
+          if (note.pinned) {
+            pinBtn.classList.add('pinned');
+            pinBtn.setAttribute('title', 'ピン留めを解除');
+          } else {
+            pinBtn.setAttribute('title', 'ピン留めする');
+          }
+          pinBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            togglePinNote(note.id);
+          });
+
+          const renameBtn = document.createElement('button');
+          renameBtn.className = 'sidebar-item-rename';
+          renameBtn.innerHTML = '✏️';
+          renameBtn.setAttribute('title', '名前を変更');
+          renameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            renameNote(note.id);
+          });
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'sidebar-item-delete';
+          delBtn.innerHTML = '×';
+          delBtn.setAttribute('title', 'メモを削除');
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteNote(note.id);
+          });
+
+          item.appendChild(pinBtn);
+          item.appendChild(renameBtn);
+          item.appendChild(delBtn);
+        }
+
         listEl.appendChild(item);
       });
     }
@@ -2184,6 +2290,98 @@
         await saveNotesListToStorage();
         renderSidebarList();
       }
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const editBtn = document.getElementById('sidebar-edit-btn');
+      const footer = document.getElementById('sidebar-footer');
+      
+      if (isEditMode) {
+        editBtn.classList.add('active');
+        editBtn.innerText = 'キャンセル';
+        footer.style.display = 'flex';
+        selectedNoteIds.clear();
+        updateBulkDeleteButton();
+      } else {
+        editBtn.classList.remove('active');
+        editBtn.innerText = '選択削除';
+        footer.style.display = 'none';
+        selectedNoteIds.clear();
+      }
+      renderSidebarList();
+    }
+
+    function updateBulkDeleteButton() {
+      const deleteBtn = document.getElementById('bulk-delete-btn');
+      if (deleteBtn) {
+        const count = selectedNoteIds.size;
+        deleteBtn.innerText = `選択したメモを削除 (${count})`;
+        deleteBtn.disabled = count === 0;
+      }
+    }
+
+    async function deleteSelectedNotes() {
+      const count = selectedNoteIds.size;
+      if (count === 0) return;
+
+      if (!confirm(`選択した ${count} 件のメモを削除しますか？`)) return;
+
+      const remainingNotes = state.notesList.filter(n => !selectedNoteIds.has(n.id));
+      const allDeleted = remainingNotes.length === 0;
+
+      for (const id of selectedNoteIds) {
+        if (db) {
+          await deleteDBValue('note_' + id);
+        } else {
+          localStorage.removeItem('note_' + id);
+        }
+      }
+
+      if (allDeleted) {
+        const newId = Date.now().toString();
+        const newNote = {
+          id: newId,
+          title: getTimestampString(),
+          updatedAt: Date.now()
+        };
+        state.notesList = [newNote];
+        state.currentNoteId = newId;
+
+        if (db) {
+          await setDBValue('note_' + newId, '');
+        } else {
+          localStorage.setItem('note_' + newId, '');
+        }
+        
+        await saveNotesListToStorage();
+        await saveCurrentNoteIdToStorage();
+
+        editor.innerHTML = '';
+      } else {
+        state.notesList = remainingNotes;
+        await saveNotesListToStorage();
+
+        if (selectedNoteIds.has(state.currentNoteId)) {
+          state.currentNoteId = state.notesList[0].id;
+          await saveCurrentNoteIdToStorage();
+          
+          let noteContent = null;
+          if (db) {
+            noteContent = await getDBValue('note_' + state.currentNoteId);
+          } else {
+            noteContent = localStorage.getItem('note_' + state.currentNoteId);
+          }
+          editor.innerHTML = noteContent || '';
+          editor.querySelectorAll('.image-block').forEach(imgBlock => {
+            imgBlock.draggable = true;
+          });
+        }
+      }
+
+      toggleEditMode();
+      updateStats();
+      showToast(`${count} 件のメモを削除しました`);
     }
 
     async function renameNote(id) {
@@ -2270,6 +2468,8 @@
 
     async function deleteNote(id) {
       if (!confirm("このメモを削除しますか？")) return;
+
+      selectedNoteIds.delete(id);
 
       const isLastNote = state.notesList.length <= 1;
 
