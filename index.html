@@ -2083,11 +2083,22 @@
       });
     }
 
+    function getTimestampString() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+    }
+
     async function createNewNote() {
       const id = Date.now().toString();
       const newNote = {
         id: id,
-        title: '新規メモ',
+        title: getTimestampString(),
         updatedAt: Date.now()
       };
 
@@ -2149,7 +2160,7 @@
         const newId = Date.now().toString();
         const newNote = {
           id: newId,
-          title: "新規メモ",
+          title: getTimestampString(),
           updatedAt: Date.now()
         };
         state.notesList = [newNote];
