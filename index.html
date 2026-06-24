@@ -1111,14 +1111,6 @@
       box-shadow: var(--shadow-inset);
     }
 
-    .bookmarklet-drag-box {
-      background-color: var(--bg-color);
-      border: 2px dashed var(--toolbar-border);
-      border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      margin-top: 12px;
-    }
 
     .bookmarklet-link {
       display: inline-block;
@@ -1690,13 +1682,6 @@
         </div>
       </div>
 
-      <div class="bookmarklet-drag-box">
-        <div style="font-size:13px; font-weight:600; margin-bottom: 6px;">ブックマークバーへ登録</div>
-        <div style="font-size:11px; color: var(--text-secondary); margin-bottom: 10px;">
-          以下のボタンをブックマークバーにドラッグ＆ドロップすると、いつでもどこからでも瞬時にこのメモ帳を開けます。
-        </div>
-        <a class="bookmarklet-link" id="bookmarklet-link" href="#" onclick="return false;">brnote</a>
-      </div>
 
       <!-- GitHub Repository Link -->
       <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--toolbar-border); display: flex; align-items: center; justify-content: space-between;">
@@ -1803,7 +1788,6 @@
     const voicePulse = document.getElementById('voice-pulse');
     const boldBtn = document.getElementById('bold-btn');
     const lhBtn = document.getElementById('lh-btn');
-    const bookmarkletLink = document.getElementById('bookmarklet-link');
 
     let recognition = null;
     let isRecording = false;
@@ -1939,8 +1923,6 @@
       // Setup Markdown Auto-Format Assist
       setupMarkdownAutoFormat();
 
-      // 6. Generate Bookmarklet
-      generateBookmarklet();
 
       // 7. Setup Listeners
       editor.addEventListener('input', () => {
@@ -1997,7 +1979,6 @@
       } else {
         localStorage.setItem('brnote_settings', JSON.stringify(state));
       }
-      generateBookmarklet();
     }
 
     async function saveNotesListToStorage() {
@@ -2911,11 +2892,6 @@
         });
     }
 
-    // --- Generate Bookmarklet Link ---
-    function generateBookmarklet() {
-      // Generates a bookmarklet loader that opens a clean data:text/html page of the editor
-      bookmarkletLink.href = window.location.href;
-    }
 
     // --- Toggle Full-Screen Wide Width Layout ---
     function toggleWidthMode() {
