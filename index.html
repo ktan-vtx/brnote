@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>brnote | Minimalist Scratchpad</title>
+  <link rel="icon" type="image/png" href="brnote-icon.png">
+  
+  <!-- Premium Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- CSS Variables & Themes --- */
+    :root {
+      /* Theme Carbon (Default Dark) */
+      --bg-color: #0d0e11;
+      --card-bg: #16181d;
+      --text-primary: #f4f4f5;
+      --text-secondary: #a1a1aa;
+      --text-muted: #52525b;
+      --toolbar-bg: rgba(22, 24, 29, 0.75);
+      --toolbar-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-rgb: 99, 102, 241;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+      --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-mono: 'Fira Code', monospace;
+      
+      /* Active state values */
+      --current-font-family: var(--font-sans);
+      --current-font-size: 18px;
+      --current-line-height: 1.6;
+      --current-font-weight: 400;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --toolbar-bg: rgba(255, 255, 255, 0.8);
+      --toolbar-border: rgba(15, 23, 42, 0.08);
+      --accent-color: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-rgb: 37, 99, 235;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="sepia"] {
+      --bg-color: #fcf6e8;
+      --card-bg: #f4edd8;
+      --text-primary: #433422;
+      --text-secondary: #705e47;
+      --text-muted: #a0907a;
+      --toolbar-bg: rgba(244, 237, 216, 0.85);
+      --toolbar-border: rgba(67, 52, 34, 0.08);
+      --accent-color: #b45309;
+      --accent-hover: #92400e;
+      --accent-rgb: 180, 83, 9;
+      --shadow-sm: 0 2px 8px rgba(67, 52, 34, 0.05);
+      --shadow-md: 0 8px 30px rgba(67, 52, 34, 0.08);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="ocean"] {
+      --bg-color: #07111e;
+      --card-bg: #0d1e36;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --toolbar-bg: rgba(13, 30, 54, 0.8);
+      --toolbar-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --accent-rgb: 56, 189, 248;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="forest"] {
+      --bg-color: #08120e;
+      --card-bg: #0f2019;
+      --text-primary: #ecfdf5;
+      --text-secondary: #a7f3d0;
+      --text-muted: #34d399;
+      --toolbar-bg: rgba(15, 32, 25, 0.8);
+      --toolbar-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #10b981;
+      --accent-hover: #059669;
+      --accent-rgb: 16, 185, 129;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="sakura"] {
+      --bg-color: #fff5f5;
+      --card-bg: #ffe3e3;
+      --text-primary: #862e2e;
+      --text-secondary: #c92a2a;
+      --text-muted: #ffa8a8;
+      --toolbar-bg: rgba(255, 227, 227, 0.8);
+      --toolbar-border: rgba(134, 46, 46, 0.08);
+      --accent-color: #fa5252;
+      --accent-hover: #e03131;
+      --accent-rgb: 250, 82, 82;
+      --shadow-sm: 0 2px 8px rgba(134, 46, 46, 0.05);
+      --shadow-md: 0 8px 30px rgba(134, 46, 46, 0.08);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="nord"] {
+      --bg-color: #2e3440;
+      --card-bg: #3b4252;
+      --text-primary: #eceff4;
+      --text-secondary: #d8dee9;
+      --text-muted: #4c566a;
+      --toolbar-bg: rgba(59, 66, 82, 0.8);
+      --toolbar-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #88c0d0;
+      --accent-hover: #81a1c1;
+      --accent-rgb: 136, 192, 208;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="midnight"] {
+      --bg-color: #000000;
+      --card-bg: #0c0c0e;
+      --text-primary: #ffffff;
+      --text-secondary: #a3a3ac;
+      --text-muted: #3f3f46;
+      --toolbar-bg: rgba(12, 12, 14, 0.8);
+      --toolbar-border: rgba(255, 255, 255, 0.08);
+      --accent-color: #a855f7;
+      --accent-hover: #9333ea;
+      --accent-rgb: 168, 85, 247;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.6);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.7);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    [data-theme="cyberpunk"] {
+      --bg-color: #1a0826;
+      --card-bg: #2d0e40;
+      --text-primary: #00ffcc;
+      --text-secondary: #ff007f;
+      --text-muted: #731a8c;
+      --toolbar-bg: rgba(45, 14, 64, 0.8);
+      --toolbar-border: rgba(0, 255, 204, 0.15);
+      --accent-color: #00ffcc;
+      --accent-hover: #00cc99;
+      --accent-rgb: 0, 255, 204;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="dracula"] {
+      --bg-color: #282a36;
+      --card-bg: #44475a;
+      --text-primary: #f8f8f2;
+      --text-secondary: #6272a4;
+      --text-muted: #bd93f9;
+      --toolbar-bg: rgba(68, 71, 90, 0.8);
+      --toolbar-border: rgba(255, 121, 198, 0.15);
+      --accent-color: #ff79c6;
+      --accent-hover: #ff92df;
+      --accent-rgb: 255, 121, 198;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="sunset"] {
+      --bg-color: #1a0f1a;
+      --card-bg: #2c1624;
+      --text-primary: #ffd3b6;
+      --text-secondary: #ffaaa5;
+      --text-muted: #ff8b94;
+      --toolbar-bg: rgba(44, 22, 36, 0.8);
+      --toolbar-border: rgba(255, 126, 95, 0.15);
+      --accent-color: #ff7e5f;
+      --accent-hover: #feb47b;
+      --accent-rgb: 255, 126, 95;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.6);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-theme="wasi"] {
+      --bg-color: #f5f4f0;
+      --card-bg: #e9e7e1;
+      --text-primary: #2c2c2c;
+      --text-secondary: #555555;
+      --text-muted: #888888;
+      --toolbar-bg: rgba(233, 231, 225, 0.85);
+      --toolbar-border: rgba(152, 95, 64, 0.15);
+      --accent-color: #985f40;
+      --accent-hover: #77432b;
+      --accent-rgb: 152, 95, 64;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-theme="matrix"] {
+      --bg-color: #000000;
+      --card-bg: #0d1a0d;
+      --text-primary: #33ff33;
+      --text-secondary: #11aa11;
+      --text-muted: #004400;
+      --toolbar-bg: rgba(13, 26, 13, 0.85);
+      --toolbar-border: rgba(51, 255, 51, 0.2);
+      --accent-color: #33ff33;
+      --accent-hover: #11aa11;
+      --accent-rgb: 51, 255, 51;
+      --shadow-sm: 0 2px 8px rgba(0, 255, 0, 0.2);
+      --shadow-md: 0 8px 30px rgba(0, 255, 0, 0.3);
+      --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- Base Resets & Layout --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--current-font-family);
+      font-size: var(--current-font-size);
+      line-height: var(--current-line-height);
+      font-weight: var(--current-font-weight);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background-color 0.4s ease, color 0.4s ease, font-size 0.2s ease, line-height 0.2s ease;
+    }
+
+    /* --- Floating Glassmorphic Toolbar --- */
+    .toolbar-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      padding: 12px 20px;
+      pointer-events: none; /* Let clicks pass through outside toolbar */
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toolbar-wrapper.hidden {
+      transform: translateY(-90%);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 99px;
+      padding: 7px 16px;
+      pointer-events: auto; /* Enable toolbar interaction */
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+      transition: box-shadow 0.3s ease;
+      max-width: 100%;
+      overflow: visible; /* Prevent popups from being clipped */
+    }
+
+    .toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+
+    .toolbar-divider {
+      width: 1px;
+      height: 20px;
+      background-color: var(--toolbar-border);
+      margin: 0 6px;
+      opacity: 0.5;
+    }
+
+    /* --- Toolbar Buttons & Controls --- */
+    button.tool-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button.tool-btn:hover {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    button.tool-btn:active {
+      transform: translateY(1px);
+    }
+
+    button.tool-btn.active {
+      background-color: var(--accent-color);
+      color: #ffffff;
+    }
+
+    /* SVG Icon Sizing */
+    button.tool-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* Tooltip */
+    button.tool-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--toolbar-border);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button.tool-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Custom Dropdowns */
+    .dropdown-container {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 44px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: none;
+      border-radius: 14px;
+      padding: 8px;
+      min-width: 140px;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 110;
+    }
+
+    .dropdown-container.open .dropdown-menu {
+      display: flex;
+      animation: dropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes dropdownFade {
+      to {
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .dropdown-item {
+      background: transparent;
+      border: none;
+      text-align: left;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropdown-item:hover {
+      background-color: var(--toolbar-border);
+      color: var(--text-primary);
+    }
+
+    .dropdown-item.active {
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    /* Theme Selector specific styles */
+    .theme-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Toolbar Toggle Button */
+    .toolbar-toggle-handle {
+      position: fixed;
+      top: 16px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      background-color: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
+
+    .toolbar-toggle-handle:hover {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      transform: scale(1.05);
+    }
+
+    /* --- Speech & Status Indicator --- */
+    .recording-pulse {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      top: 4px;
+      right: 4px;
+      animation: pulse 1.2s infinite;
+      display: none;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+      100% { transform: scale(0.9); opacity: 1; }
+    }
+
+    /* --- Editor Container --- */
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 90px 20px 40px;
+      width: 100%;
+      max-width: 840px;
+      margin: 0 auto;
+      position: relative;
+      transition: max-width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-width-mode="full"] .main-container {
+      max-width: 96%;
+    }
+
+    .editor {
+      width: 100%;
+      flex-1: 1;
+      min-height: 70vh;
+      outline: none;
+      color: var(--text-primary);
+      transition: font-weight 0.15s ease;
+      caret-color: var(--accent-color);
+      display: flow-root;
+    }
+
+    /* Placeholder text */
+    .editor:empty::before {
+      content: "ここにテキストを入力、画像をペースト、または音声を録音してください...";
+      color: var(--text-muted);
+      pointer-events: none;
+      display: block;
+    }
+
+    /* --- Paste Image Block --- */
+    .image-block {
+      display: inline-flex;
+      flex-direction: column;
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 16px;
+      padding: 12px;
+      margin: 18px 0;
+      max-width: 100%;
+      position: relative;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      animation: itemFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .image-block img {
+      max-width: 100%;
+      max-height: 450px;
+      border-radius: 10px;
+      object-fit: contain;
+      -webkit-user-drag: none; /* Disable browser native image dragging */
+      user-select: none;
+    }
+
+    .image-comment {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background-color: rgba(0, 0, 0, 0.06);
+      border: none;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      outline: none;
+      min-height: 36px;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-inset);
+    }
+
+    .image-comment:focus {
+      background-color: rgba(0, 0, 0, 0.12);
+      box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-color);
+    }
+
+    .image-comment:empty::before {
+      content: "メモやコメントを書き込む...";
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Delete Button for cards */
+    .delete-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #ef4444;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+
+    .image-block:hover .delete-btn,
+    .btn-wrapper:hover .delete-btn {
+      opacity: 1;
+    }
+
+    .delete-btn:hover {
+      transform: scale(1.1);
+      background-color: #dc2626;
+    }
+
+    /* --- Interactive Action Buttons --- */
+    .btn-wrapper {
+      display: inline-flex;
+      position: relative;
+      margin: 4px 6px;
+      vertical-align: middle;
+      animation: itemFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .custom-action-btn {
+      background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+      color: white !important;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .custom-action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+    }
+
+    .custom-action-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Toast Notification for actions */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: var(--text-primary);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 14px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* --- Modals --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: none;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      font-family: var(--font-sans);
+      animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .modal-description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input, .form-select {
+      background-color: rgba(0, 0, 0, 0.1);
+      border: none;
+      color: var(--text-primary);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-inset);
+    }
+
+    .form-input:focus, .form-select:focus {
+      background-color: rgba(0, 0, 0, 0.18);
+      box-shadow: var(--shadow-inset), 0 0 0 2px var(--accent-color);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .modal-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-sans);
+      transition: all 0.2s ease;
+    }
+
+    .modal-btn-cancel {
+      background-color: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--toolbar-border);
+    }
+
+    .modal-btn-cancel:hover {
+      background-color: var(--toolbar-border);
+      color: var(--text-primary);
+    }
+
+    .modal-btn-confirm {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    .modal-btn-confirm:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* --- Animation Utilities --- */
+    @keyframes itemFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Help view styling */
+    .help-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 8px;
+      font-size: 13px;
+    }
+
+    .help-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--toolbar-border);
+      padding-bottom: 8px;
+    }
+
+    .kbd {
+      background-color: var(--bg-color);
+      border: 1px solid var(--toolbar-border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-inset);
+    }
+
+    .bookmarklet-drag-box {
+      background-color: var(--bg-color);
+      border: 2px dashed var(--toolbar-border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .bookmarklet-link {
+      display: inline-block;
+      background-color: var(--accent-color);
+      color: white !important;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      cursor: grab;
+      margin-top: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .bookmarklet-link:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.02);
+    }
+
+    /* Word Counter - Fixed at the very bottom right */
+    .stats-bar {
+      position: fixed;
+      bottom: 16px;
+      right: 24px;
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      color: var(--text-secondary);
+      background-color: var(--toolbar-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--toolbar-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-sm);
+      z-index: 90;
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+    }
+
+    .stats-bar:hover {
+      opacity: 1;
+    }
+
+    /* Column Row Styles */
+    .column-row {
+      display: flex;
+      gap: 0;
+      margin: 20px 0;
+      width: 100%;
+      position: relative;
+      border: 1px dashed var(--toolbar-border);
+      border-radius: 12px;
+      padding: 4px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .column-row:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .column-cell {
+      min-height: 120px;
+      outline: none;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: rgba(var(--accent-rgb), 0.01);
+      border: 1px solid transparent;
+      transition: background-color 0.2s ease;
+      overflow-y: auto;
+    }
+
+    .column-cell:focus {
+      background-color: rgba(var(--accent-rgb), 0.03);
+    }
+
+    .column-cell:empty::before {
+      content: attr(data-placeholder);
+      color: var(--text-muted);
+      pointer-events: none;
+      display: block;
+    }
+
+    .column-divider {
+      width: 8px;
+      margin: 0 4px;
+      cursor: col-resize;
+      background-color: transparent;
+      transition: background-color 0.2s ease;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .column-divider:hover,
+    .column-divider:active {
+      background-color: var(--accent-color);
+    }
+
+    .column-row > .delete-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #ef4444;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      z-index: 10;
+    }
+
+    .column-row:hover > .delete-btn {
+      opacity: 1;
+    }
+
+    /* Resizable Image block and handles */
+    .image-block {
+      position: relative;
+      transition: float 0.3s ease, margin 0.3s ease;
+    }
+
+    /* Alignment Styles for Image Blocks */
+    .image-block.align-left {
+      float: left;
+      margin: 12px 24px 12px 0;
+      clear: left;
+    }
+
+    .image-block.align-right {
+      float: right;
+      margin: 12px 0 12px 24px;
+      clear: right;
+    }
+
+    .image-block.align-center {
+      float: none;
+      display: inline-flex;
+      margin: 18px 0;
+      clear: both;
+    }
+
+    /* Image Controls Overlay */
+    .image-controls {
+      position: absolute;
+      top: -8px;
+      left: 12px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+
+    .image-block:hover .image-controls {
+      opacity: 1;
+    }
+
+    .image-controls button.control-btn {
+      background: var(--toolbar-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      width: 26px;
+      height: 26px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+    }
+
+    .image-controls button.control-btn:hover {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+
+    .image-controls button.control-btn.active {
+      background: var(--accent-color);
+      color: white;
+      box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.3);
+    }
+
+    .image-resize-handle {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      cursor: se-resize;
+      background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
+      border-bottom-right-radius: 12px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10; /* Float above comments/images */
+      user-select: none; /* Prevent text highlight on drag */
+      pointer-events: auto;
+    }
+
+    .image-block:hover .image-resize-handle {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden configuration container (used to bake state during file serialization) -->
+  <div id="app-config" style="display: none;" 
+       data-saved-theme="carbon" 
+       data-saved-font="sans" 
+       data-saved-size="18px" 
+       data-saved-height="1.6" 
+       data-saved-bold="false">
+  </div>
+
+  <!-- Toolbar Toggle Trigger -->
+  <div class="toolbar-toggle-handle" id="toolbar-toggle" title="ツールバーを隠す">
+    <svg viewBox="0 0 24 24" id="toggle-chevron" style="width:16px; height:16px; fill:currentColor; transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+      <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+    </svg>
+  </div>
+
+  <!-- Toolbar Container -->
+  <div class="toolbar-wrapper" id="toolbar-wrapper">
+    <div class="toolbar" id="main-toolbar">
+      
+      <!-- Group 1: Typography -->
+      <div class="toolbar-group">
+        
+        <!-- Font Selection -->
+        <div class="dropdown-container" id="font-dropdown-container">
+          <button class="tool-btn" id="font-btn" data-tooltip="フォントの種類" title="フォントの種類" aria-label="フォントの種類">
+            <svg viewBox="0 0 24 24">
+              <path d="M12.5 2h-1L6 16.5h1.7l1.2-3.2h6.2l1.2 3.2h1.7L12.5 2zm-3 9.7l2.5-6.6 2.5 6.6H9.5z"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item active" onclick="setFont('sans')"><span>Sans-Serif</span> <small>Outfit</small></button>
+            <button class="dropdown-item" onclick="setFont('serif')"><span>Serif</span> <small>Playfair</small></button>
+            <button class="dropdown-item" onclick="setFont('mono')"><span>Monospace</span> <small>Fira</small></button>
+          </div>
+        </div>
+
+        <!-- Size Decrement -->
+        <button class="tool-btn" onclick="adjustFontSize(-2)" data-tooltip="小さく (Alt+-)" title="小さく (Alt+-)" aria-label="フォントサイズ縮小">
+          <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+        </button>
+
+        <!-- Size Increment -->
+        <button class="tool-btn" onclick="adjustFontSize(2)" data-tooltip="大きく (Alt++)" title="大きく (Alt++)" aria-label="フォントサイズ拡大">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </button>
+
+        <!-- Line Height Dropdown -->
+        <div class="dropdown-container" id="lh-dropdown-container">
+          <button class="tool-btn" id="lh-btn" data-tooltip="行間の調整" title="行間の調整" aria-label="行間の調整">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 19h18v-2H3v2zm0-6h18v-2H3v2zm0-8v2h18V5H3zm0 10h18v-2H3v2z"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu" style="min-width: 140px; z-index: 150;">
+            <div style="font-size:11px; color:var(--text-secondary); padding: 6px 12px; font-weight:600; text-transform:uppercase; border-bottom:1px solid var(--toolbar-border);">行間の調整</div>
+            <button class="dropdown-item" onclick="setLineHeight(1.0)"><span>極狭 (1.0)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(1.2)"><span>狭め (1.2)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(1.4)"><span>やや狭め (1.4)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(1.6)"><span>標準 (1.6)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(1.8)"><span>やや広め (1.8)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(2.0)"><span>広め (2.0)</span></button>
+            <button class="dropdown-item" onclick="setLineHeight(2.5)"><span>極広 (2.5)</span></button>
+          </div>
+        </div>
+
+        <!-- Bold Switcher (Partial Selection) -->
+        <button class="tool-btn" id="bold-btn" onclick="toggleBold()" data-tooltip="部分太字 (Ctrl+B)" title="部分太字 (Ctrl+B)" aria-label="部分太字トグル">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/>
+          </svg>
+        </button>
+
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 2: Insert Operations -->
+      <div class="toolbar-group">
+        
+        <!-- Insert Custom Button -->
+        <button class="tool-btn" onclick="openButtonModal()" data-tooltip="ボタンを追加" title="ボタンを追加" aria-label="アクションボタン追加">
+          <svg viewBox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>
+          </svg>
+        </button>
+
+        <!-- Insert Columns -->
+        <button class="tool-btn" onclick="insertColumnRow()" data-tooltip="左右カラムを挿入" title="左右カラムを挿入" aria-label="左右カラムを追加">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 14h7V6H4v12zm9 0h7V6h-7v12z"/>
+          </svg>
+        </button>
+
+        <!-- Voice Recognition Toggle -->
+        <button class="tool-btn" id="voice-btn" onclick="toggleVoiceInput()" data-tooltip="音声入力 (Alt+V)" title="音声入力 (Alt+V)" aria-label="音声入力の開始/停止">
+          <span class="recording-pulse" id="voice-pulse"></span>
+          <svg viewBox="0 0 24 24">
+            <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+          </svg>
+        </button>
+
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 3: Themes & Preferences -->
+      <div class="toolbar-group">
+        
+        <!-- Theme Dropdown -->
+        <div class="dropdown-container" id="theme-dropdown-container">
+          <button class="tool-btn" id="theme-btn" data-tooltip="テーマカラー" title="テーマカラー" aria-label="テーマの選択">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.09-.61-.58-1.07-1.2-1.07H18c-.83 0-1.5-.67-1.5-1.5 0-.41.17-.79.44-1.06L18.7 6.1c.36-.36.32-.97-.1-1.28C16.92 3.65 14.54 3 12 3zm-5 8c-.83 0-1.5-.67-1.5-1.5S6.17 8 7 8s1.5.67 1.5 1.5S7.83 11 7 11zm3-3c-.83 0-1.5-.67-1.5-1.5S9.17 5 10 5s1.5.67 1.5 1.5S10.83 8 10 8zm4 0c-.83 0-1.5-.67-1.5-1.5S13.17 5 14 5s1.5.67 1.5 1.5S14.83 8 14 8zm3 3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item" onclick="setTheme('carbon')"><span>Carbon</span> <span class="theme-dot" style="background:#0d0e11"></span></button>
+            <button class="dropdown-item" onclick="setTheme('light')"><span>Chalk</span> <span class="theme-dot" style="background:#ffffff; border:1px solid #d1d5db;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('sepia')"><span>Sepia</span> <span class="theme-dot" style="background:#fcf6e8"></span></button>
+            <button class="dropdown-item" onclick="setTheme('ocean')"><span>Ocean</span> <span class="theme-dot" style="background:#07111e"></span></button>
+            <button class="dropdown-item" onclick="setTheme('forest')"><span>Forest</span> <span class="theme-dot" style="background:#08120e"></span></button>
+            <button class="dropdown-item" onclick="setTheme('sakura')"><span>Sakura</span> <span class="theme-dot" style="background:#fff5f5; border:1px solid #ffc9c9;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('nord')"><span>Nord</span> <span class="theme-dot" style="background:#2e3440"></span></button>
+            <button class="dropdown-item" onclick="setTheme('midnight')"><span>Midnight</span> <span class="theme-dot" style="background:#000000; box-shadow:0 0 4px #a855f7;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('cyberpunk')"><span>Cyberpunk</span> <span class="theme-dot" style="background:#1a0826; border:1px solid #00ffcc;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('dracula')"><span>Dracula</span> <span class="theme-dot" style="background:#282a36; border:1px solid #ff79c6;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('sunset')"><span>Sunset</span> <span class="theme-dot" style="background:#1a0f1a; border:1px solid #ff7e5f;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('wasi')"><span>Wasi (和紙)</span> <span class="theme-dot" style="background:#f5f4f0; border:1px solid #985f40;"></span></button>
+            <button class="dropdown-item" onclick="setTheme('matrix')"><span>Matrix</span> <span class="theme-dot" style="background:#000000; border:1px solid #33ff33;"></span></button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <!-- Group 4: Save & General -->
+      <div class="toolbar-group">
+        
+        <!-- Copy All Text -->
+        <button class="tool-btn" onclick="copyAllText()" data-tooltip="全テキストをコピー" title="全テキストをコピー" aria-label="全コピー">
+          <svg viewBox="0 0 24 24">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+          </svg>
+        </button>
+
+        <!-- Save/Export Dropdown -->
+        <div class="dropdown-container" id="save-dropdown-container">
+          <button class="tool-btn" id="save-btn" data-tooltip="保存・エクスポート" title="保存・エクスポート" aria-label="保存・エクスポート">
+            <svg viewBox="0 0 24 24">
+              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+            </svg>
+          </button>
+          <div class="dropdown-menu" style="min-width: 190px;">
+            <div style="font-size:11px; color:var(--text-secondary); padding: 6px 12px; font-weight:600; text-transform:uppercase; border-bottom:1px solid var(--toolbar-border);">ファイルを保存</div>
+            <button class="dropdown-item" onclick="downloadAsMarkdown()"><span>Markdown (.md)</span></button>
+            <button class="dropdown-item" onclick="downloadAsText()"><span>テキスト (.txt)</span></button>
+            <button class="dropdown-item" onclick="downloadSelf()"><span>自己完結 HTML (.html)</span></button>
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="tool-btn" onclick="confirmReset()" data-tooltip="全リセット" title="全リセット" aria-label="リセット">
+          <svg viewBox="0 0 24 24">
+            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+          </svg>
+        </button>
+
+        <!-- Info / Help -->
+        <button class="tool-btn" onclick="openHelpModal()" data-tooltip="ヘルプ/情報" title="ヘルプ/情報" aria-label="情報">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    
+    <!-- Rich Editor Area -->
+    <div class="editor" id="editor" contenteditable="true" spellcheck="false"></div>
+
+    <!-- Statistics and Character Count -->
+    <div class="stats-bar">
+      <span id="char-count">文字数: 0</span>
+      <span id="word-count">単語数: 0</span>
+    </div>
+
+  </main>
+
+  <!-- Toast Element -->
+  <div class="toast" id="toast">
+    <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </svg>
+    <span id="toast-message">コピーされました</span>
+  </div>
+
+  <!-- Create Button Modal -->
+  <div class="modal-overlay" id="button-modal">
+    <div class="modal">
+      <div class="modal-title">アクションボタンの作成</div>
+      <div class="modal-description">エディタ内からワンクリックで発動できる便利なアクションボタンを追加します。</div>
+      
+      <div class="form-group">
+        <label class="form-label" for="btn-label">ボタンの文字</label>
+        <input type="text" class="form-input" id="btn-label" placeholder="例: メッセージコピー / Google開く">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="btn-action">アクションの種類</label>
+        <select class="form-select" id="btn-action" onchange="toggleActionInputHint()">
+          <option value="copy">テキストをクリップボードにコピー</option>
+          <option value="insert">定型テキストをエディタに挿入</option>
+          <option value="link">外部URLリンクを開く</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="btn-value-label" for="btn-value">コピーするテキスト</label>
+        <input type="text" class="form-input" id="btn-value" placeholder="例: user@example.com">
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" onclick="closeButtonModal()">キャンセル</button>
+        <button class="modal-btn modal-btn-confirm" onclick="createCustomButton()">作成する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help & Info Modal -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-title">brnote ユーザーガイド</div>
+      
+      <div class="help-grid">
+        <div class="help-item">
+          <span>画像をその場でペースト</span>
+          <span><kbd>Ctrl</kbd> + <kbd>V</kbd> (画像データ)</span>
+        </div>
+        <div class="help-item">
+          <span>音声入力 開始 / 停止</span>
+          <span><kbd>Alt</kbd> + <kbd>V</kbd></span>
+        </div>
+        <div class="help-item">
+          <span>太字トグル</span>
+          <span><kbd>Ctrl</kbd> + <kbd>B</kbd></span>
+        </div>
+        <div class="help-item">
+          <span>フォントサイズ拡大</span>
+          <span><kbd>Alt</kbd> + <kbd>+</kbd></span>
+        </div>
+        <div class="help-item">
+          <span>フォントサイズ縮小</span>
+          <span><kbd>Alt</kbd> + <kbd>-</kbd></span>
+        </div>
+        <div class="help-item">
+          <span>ツールバー表示/非表示</span>
+          <span>画面上端をホバー / 上端のつまみ</span>
+        </div>
+        <div class="help-item">
+          <span>自動保存</span>
+          <span>編集時にローカルに自動保存されます</span>
+        </div>
+      </div>
+
+      <div class="bookmarklet-drag-box">
+        <div style="font-size:13px; font-weight:600; margin-bottom: 6px;">ブックマークバーへ登録</div>
+        <div style="font-size:11px; color: var(--text-secondary); margin-bottom: 10px;">
+          以下のボタンをブックマークバーにドラッグ＆ドロップすると、いつでもどこからでも瞬時にこのメモ帳を開けます。
+        </div>
+        <a class="bookmarklet-link" id="bookmarklet-link" href="#" onclick="return false;">brnote</a>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-cancel" onclick="closeHelpModal()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- JAVASCRIPT --- -->
+  <script>
+    // --- IndexedDB Database Wrapper ---
+    const DB_NAME = 'brnote_db';
+    const STORE_NAME = 'notes';
+    let db = null;
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => {
+          reject(e.target.error);
+        };
+      });
+    }
+
+    function getDBValue(key) {
+      return new Promise((resolve) => {
+        if (!db) return resolve(null);
+        const transaction = db.transaction([STORE_NAME], 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(key);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function setDBValue(key, value) {
+      return new Promise((resolve) => {
+        if (!db) return resolve();
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.put(value, key);
+        request.onsuccess = () => resolve();
+        request.onerror = (err) => {
+          console.error("Failed to write to IndexedDB:", err);
+          resolve();
+        };
+      });
+    }
+
+    function clearDB() {
+      return new Promise((resolve) => {
+        if (!db) return resolve();
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => resolve();
+      });
+    }
+
+    // Debouncing utility for saves
+    function debounce(func, delay) {
+      let timeoutId;
+      return function(...args) {
+        if (timeoutId) clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      };
+    }
+
+    // Constants & Global State
+    const editor = document.getElementById('editor');
+    const appConfig = document.getElementById('app-config');
+    const toolbarWrapper = document.getElementById('toolbar-wrapper');
+    const toolbarToggle = document.getElementById('toolbar-toggle');
+    const voiceBtn = document.getElementById('voice-btn');
+    const voicePulse = document.getElementById('voice-pulse');
+    const boldBtn = document.getElementById('bold-btn');
+    const lhBtn = document.getElementById('lh-btn');
+    const bookmarkletLink = document.getElementById('bookmarklet-link');
+
+    let recognition = null;
+    let isRecording = false;
+
+    // Config default parameters
+    let state = {
+      theme: 'carbon',
+      font: 'sans',
+      fontSize: 18,
+      lineHeight: 1.6,
+      bold: false,
+      toolbarPinned: true,
+      fullWidth: true // Default to true as user requested full screen layout
+    };
+
+    // --- Bootstrapping & Setup ---
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Initialize IndexedDB
+      try {
+        await initDB();
+      } catch (err) {
+        console.warn("IndexedDB initialization failed. Falling back to localStorage.", err);
+      }
+
+      // 2. Initial State Loading
+      loadConfigFromHTML();
+      await loadConfigFromStorage();
+      applyAllStyles();
+      
+      // 3. Load Saved Editor Contents
+      let savedContent = null;
+      if (db) {
+        savedContent = await getDBValue('brnote_content');
+      } else {
+        savedContent = localStorage.getItem('brnote_content');
+      }
+
+      if (savedContent) {
+        editor.innerHTML = savedContent;
+      } else {
+        // Fallback for self-contained baked content (baked via download)
+        const bakedContent = `<!-- BAKED_CONTENT_START -->`;
+        if (bakedContent && !bakedContent.startsWith('<!--')) {
+          editor.innerHTML = bakedContent;
+        }
+      }
+
+      // Ensure all loaded image blocks are draggable
+      editor.querySelectorAll('.image-block').forEach(imgBlock => {
+        imgBlock.draggable = true;
+      });
+
+      // 4. Dropdowns Setup
+      setupDropdowns();
+
+      // 5. Setup Keybinds
+      setupKeybinds();
+
+      // 6. Generate Bookmarklet
+      generateBookmarklet();
+
+      // 7. Setup Listeners
+      editor.addEventListener('input', () => {
+        saveContentDebounced();
+        updateStats();
+      });
+      updateStats();
+
+      // Image pasting interceptor
+      editor.addEventListener('paste', handleImagePaste);
+
+      // Mouse position tracker for toolbar slide down
+      window.addEventListener('mousemove', handleToolbarHoverTrigger);
+
+      // Click toggle handle
+      toolbarToggle.addEventListener('click', toggleToolbarPin);
+
+      // Drag resize listener initializer
+      setupResizeAndDividerListeners();
+    });
+
+    // --- Configuration State Management ---
+    function loadConfigFromHTML() {
+      // Load configuration loaded in HTML dataset if present (for self-packaged state)
+      if (appConfig.dataset.savedTheme) state.theme = appConfig.dataset.savedTheme;
+      if (appConfig.dataset.savedFont) state.font = appConfig.dataset.savedFont;
+      if (appConfig.dataset.savedSize) state.fontSize = parseInt(appConfig.dataset.savedSize) || 18;
+      if (appConfig.dataset.savedHeight) state.lineHeight = parseFloat(appConfig.dataset.savedHeight) || 1.6;
+      if (appConfig.dataset.savedBold) state.bold = appConfig.dataset.savedBold === 'true';
+      if (appConfig.dataset.savedWidth) state.fullWidth = appConfig.dataset.savedWidth === 'true';
+    }
+
+    async function loadConfigFromStorage() {
+      let saved = null;
+      if (db) {
+        saved = await getDBValue('brnote_settings');
+      } else {
+        saved = localStorage.getItem('brnote_settings');
+      }
+
+      if (saved) {
+        try {
+          const parsed = typeof saved === 'string' ? JSON.parse(saved) : saved;
+          state = { ...state, ...parsed };
+        } catch(e) {
+          console.error("Settings corrupted. Resetting.");
+        }
+      }
+    }
+
+    async function saveConfigToStorage() {
+      if (db) {
+        await setDBValue('brnote_settings', state);
+      } else {
+        localStorage.setItem('brnote_settings', JSON.stringify(state));
+      }
+      generateBookmarklet();
+    }
+
+    async function saveContent() {
+      if (db) {
+        await setDBValue('brnote_content', editor.innerHTML);
+      } else {
+        localStorage.setItem('brnote_content', editor.innerHTML);
+      }
+    }
+
+    // Debounce database writing to minimize overhead on fast typing
+    const saveContentDebounced = debounce(saveContent, 300);
+
+    function applyAllStyles() {
+      // Themes
+      document.body.setAttribute('data-theme', state.theme);
+
+      // Layout Width Mode (Always Full Screen)
+      document.body.setAttribute('data-width-mode', 'full');
+      
+      // Font face
+      let fontStack = 'var(--font-sans)';
+      if (state.font === 'serif') fontStack = 'var(--font-serif)';
+      if (state.font === 'mono') fontStack = 'var(--font-mono)';
+      document.documentElement.style.setProperty('--current-font-family', fontStack);
+      
+      // Font size
+      document.documentElement.style.setProperty('--current-font-size', state.fontSize + 'px');
+      
+      // Line height
+      document.documentElement.style.setProperty('--current-line-height', state.lineHeight);
+
+      // Update configuration variables inside HTML (for self serialization)
+      appConfig.dataset.savedTheme = state.theme;
+      appConfig.dataset.savedFont = state.font;
+      appConfig.dataset.savedSize = state.fontSize + 'px';
+      appConfig.dataset.savedHeight = state.lineHeight;
+      appConfig.dataset.savedWidth = state.fullWidth;
+
+      // Update active dropdown items visual cues
+      document.querySelectorAll('#font-dropdown-container .dropdown-item').forEach((item, idx) => {
+        const fonts = ['sans', 'serif', 'mono'];
+        item.classList.toggle('active', state.font === fonts[idx]);
+      });
+
+      // Pin class updates & toggle chevron arrow rotation
+      const chevron = document.getElementById('toggle-chevron');
+      const toggle = document.getElementById('toolbar-toggle');
+      if (!state.toolbarPinned) {
+        toolbarWrapper.classList.add('hidden');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        if (toggle) toggle.setAttribute('title', "ツールバーを表示");
+      } else {
+        toolbarWrapper.classList.remove('hidden');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        if (toggle) toggle.setAttribute('title', "ツールバーを隠す");
+      }
+
+      // Update active line height dropdown item visual cues
+      document.querySelectorAll('#lh-dropdown-container .dropdown-item').forEach((item) => {
+        const valAttr = item.getAttribute('onclick');
+        if (valAttr) {
+          const match = valAttr.match(/setLineHeight\(([^)]+)\)/);
+          if (match) {
+            const val = parseFloat(match[1]);
+            item.classList.toggle('active', Math.abs(state.lineHeight - val) < 0.01);
+          }
+        }
+      });
+
+      // Update active theme dropdown item visual cues
+      document.querySelectorAll('#theme-dropdown-container .dropdown-item').forEach((item) => {
+        const valAttr = item.getAttribute('onclick');
+        if (valAttr) {
+          const match = valAttr.match(/setTheme\('([^']+)'\)/);
+          if (match) {
+            item.classList.toggle('active', state.theme === match[1]);
+          }
+        }
+      });
+    }
+
+    // --- Styling Functions ---
+    function setTheme(themeName) {
+      state.theme = themeName;
+      applyAllStyles();
+      saveConfigToStorage();
+    }
+
+    function setFont(fontName) {
+      state.font = fontName;
+      applyAllStyles();
+      saveConfigToStorage();
+      closeAllDropdowns();
+    }
+
+    function adjustFontSize(delta) {
+      state.fontSize = Math.max(12, Math.min(64, state.fontSize + delta));
+      applyAllStyles();
+      saveConfigToStorage();
+      showToast(`サイズ: ${state.fontSize}px`);
+    }
+
+    function setLineHeight(val) {
+      state.lineHeight = parseFloat(val);
+      applyAllStyles();
+      saveConfigToStorage();
+      closeAllDropdowns();
+    }
+
+    function toggleBold() {
+      document.execCommand('bold', false, null);
+      editor.focus();
+    }
+
+    // --- Dropdowns ---
+    function setupDropdowns() {
+      const dropBtn = document.querySelectorAll('.dropdown-container .tool-btn');
+      dropBtn.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const container = btn.parentElement;
+          const isOpen = container.classList.contains('open');
+          closeAllDropdowns();
+          if (!isOpen) {
+            container.classList.add('open');
+          }
+        });
+      });
+      window.addEventListener('click', closeAllDropdowns);
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-container').forEach(c => c.classList.remove('open'));
+    }
+
+    // --- Auto-Hide & Pin Toolbar ---
+    function toggleToolbarPin() {
+      state.toolbarPinned = !state.toolbarPinned;
+      applyAllStyles();
+      saveConfigToStorage();
+      showToast(state.toolbarPinned ? "ツールバーを固定しました" : "オートハイドを有効にしました");
+    }
+
+    function handleToolbarHoverTrigger(e) {
+      if (state.toolbarPinned) return;
+      
+      // Reveal toolbar when mouse is near the top (top 45px)
+      if (e.clientY < 45) {
+        toolbarWrapper.classList.remove('hidden');
+      } else {
+        // Hide it if we are not hovering elements inside it
+        if (!toolbarWrapper.contains(e.target) && !e.target.classList.contains('toolbar-toggle-handle')) {
+          toolbarWrapper.classList.add('hidden');
+        }
+      }
+    }
+
+    // --- Pasting and Handling Images ---
+    function handleImagePaste(e) {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf('image') === 0) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            insertImageBlock(evt.target.result);
+          };
+          reader.readAsDataURL(blob);
+          break; // only process the first image pasted
+        }
+      }
+    }
+
+    // --- Image Insertion & Resizing / Comments ---
+    function insertImageBlock(base64Src) {
+      // Focus editor if not focused
+      editor.focus();
+
+      // Create a gorgeous block with comment section
+      const imgBlock = document.createElement('div');
+      imgBlock.className = 'image-block align-center'; // Default center
+      imgBlock.contentEditable = 'false';
+      imgBlock.draggable = true; // Enable HTML5 draggable
+      imgBlock.dataset.align = 'center';
+
+      const imgEl = document.createElement('img');
+      imgEl.src = base64Src;
+      imgEl.alt = 'Pasted Image';
+      
+      const commentEl = document.createElement('div');
+      commentEl.className = 'image-comment';
+      commentEl.contentEditable = 'true';
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn';
+      delBtn.innerText = '×';
+      delBtn.setAttribute('title', '画像を削除');
+
+      // Create Alignment Controls Overlay
+      const controls = document.createElement('div');
+      controls.className = 'image-controls';
+
+      const btnLeft = document.createElement('button');
+      btnLeft.className = 'control-btn align-left-btn';
+      btnLeft.innerHTML = '◀';
+      btnLeft.dataset.align = 'left';
+      btnLeft.setAttribute('title', '左寄せ（テキスト回り込み）');
+
+      const btnCenter = document.createElement('button');
+      btnCenter.className = 'control-btn align-center-btn active';
+      btnCenter.innerHTML = '■';
+      btnCenter.dataset.align = 'center';
+      btnCenter.setAttribute('title', '中央寄せ');
+
+      const btnRight = document.createElement('button');
+      btnRight.className = 'control-btn align-right-btn';
+      btnRight.innerHTML = '▶';
+      btnRight.dataset.align = 'right';
+      btnRight.setAttribute('title', '右寄せ（テキスト回り込み）');
+
+      controls.appendChild(btnLeft);
+      controls.appendChild(btnCenter);
+      controls.appendChild(btnRight);
+
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'image-resize-handle';
+
+      imgBlock.appendChild(imgEl);
+      imgBlock.appendChild(commentEl);
+      imgBlock.appendChild(delBtn);
+      imgBlock.appendChild(controls);
+      imgBlock.appendChild(resizeHandle);
+
+      // Insert at current cursor selection
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.insertNode(imgBlock);
+        
+        // Move selection after the block
+        range.collapse(false);
+        const nextNode = imgBlock.nextSibling;
+        if (!nextNode) {
+          // If no siblings, insert an empty spacer text node to enable clean continuation
+          const spacer = document.createTextNode('\u00A0');
+          editor.appendChild(spacer);
+          range.setStartAfter(imgBlock);
+          range.collapse(true);
+        }
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        editor.appendChild(imgBlock);
+      }
+      
+      saveContentDebounced();
+      updateStats();
+    }
+
+    // --- Interactive custom buttons ---
+    function openButtonModal() {
+      document.getElementById('button-modal').classList.add('open');
+      document.getElementById('btn-label').focus();
+    }
+
+    function closeButtonModal() {
+      document.getElementById('button-modal').classList.remove('open');
+      // Reset inputs
+      document.getElementById('btn-label').value = '';
+      document.getElementById('btn-value').value = '';
+    }
+
+    function toggleActionInputHint() {
+      const action = document.getElementById('btn-action').value;
+      const label = document.getElementById('btn-value-label');
+      const input = document.getElementById('btn-value');
+
+      if (action === 'copy') {
+        label.innerText = 'コピーするテキスト';
+        input.placeholder = '例: user@example.com';
+      } else if (action === 'insert') {
+        label.innerText = '挿入する定型文';
+        input.placeholder = '例: お疲れ様です、〇〇です。';
+      } else if (action === 'link') {
+        label.innerText = 'リンク先 URL';
+        input.placeholder = '例: https://google.com';
+      }
+    }
+
+    function createCustomButton() {
+      const label = document.getElementById('btn-label').value.trim();
+      const action = document.getElementById('btn-action').value;
+      const value = document.getElementById('btn-value').value.trim();
+
+      if (!label || !value) {
+        alert('ボタンの文字と内容を入力してください。');
+        return;
+      }
+
+      insertCustomButtonElement(label, action, value);
+      closeButtonModal();
+    }
+
+    function insertCustomButtonElement(label, action, value) {
+      editor.focus();
+
+      const btnWrapper = document.createElement('span');
+      btnWrapper.className = 'btn-wrapper';
+      btnWrapper.contentEditable = 'false';
+
+      const btn = document.createElement('button');
+      btn.className = 'custom-action-btn';
+      btn.dataset.action = action;
+      btn.dataset.value = value;
+      btn.innerText = label;
+      btn.addEventListener('click', (e) => {
+        handleCustomButtonClick(btn);
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn';
+      delBtn.innerText = '×';
+      delBtn.addEventListener('click', () => {
+        btnWrapper.remove();
+        saveContentDebounced();
+      });
+
+      btnWrapper.appendChild(btn);
+      btnWrapper.appendChild(delBtn);
+
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.insertNode(btnWrapper);
+        range.collapse(false);
+        
+        // Add single space after button for clean editing flow
+        const space = document.createTextNode('\u00A0');
+        range.insertNode(space);
+        range.collapse(false);
+        
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        editor.appendChild(btnWrapper);
+      }
+      
+      saveContentDebounced();
+    }
+
+    // Attach click triggers to existing static custom buttons during boot
+    document.querySelectorAll('.custom-action-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        handleCustomButtonClick(btn);
+      });
+      // Also ensure parent delBtn is attached if exists
+      const parent = btn.parentElement;
+      if (parent && parent.className === 'btn-wrapper') {
+        const del = parent.querySelector('.delete-btn');
+        if (del) {
+          del.addEventListener('click', () => {
+            parent.remove();
+            saveContentDebounced();
+          });
+        }
+      }
+    });
+
+    function handleCustomButtonClick(btn) {
+      const action = btn.dataset.action;
+      const val = btn.dataset.value;
+
+      if (action === 'copy') {
+        navigator.clipboard.writeText(val).then(() => {
+          showToast(`「${val}」をコピーしました`);
+        }).catch(err => {
+          console.error("Clipboard copy failed: ", err);
+        });
+      } else if (action === 'insert') {
+        // Insert inline text at cursor inside editor
+        editor.focus();
+        const sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          range.deleteContents();
+          
+          // Re-evaluate if variables inside value (like date templates)
+          let finalVal = val;
+          if (val === '%date%') {
+            finalVal = new Date().toLocaleDateString('ja-JP');
+          } else if (val === '%time%') {
+            finalVal = new Date().toLocaleTimeString('ja-JP', {hour: '2-digit', minute:'2-digit'});
+          } else if (val === '%datetime%') {
+            finalVal = new Date().toLocaleString('ja-JP');
+          }
+
+          const txtNode = document.createTextNode(finalVal);
+          range.insertNode(txtNode);
+          
+          // Place cursor after inserted text
+          range.setStartAfter(txtNode);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+        saveContentDebounced();
+        updateStats();
+      } else if (action === 'link') {
+        window.open(val, '_blank');
+      }
+    }
+
+    // --- Web Speech API (Voice Input) ---
+    function toggleVoiceInput() {
+      if (isRecording) {
+        stopVoiceInput();
+        return;
+      }
+      
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("お使いのブラウザは音声入力をサポートしていません。Chrome、Safari、またはEdgeでお試しください。");
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'ja-JP';
+
+      recognition.onstart = () => {
+        isRecording = true;
+        voicePulse.style.display = 'block';
+        voiceBtn.classList.add('active');
+        showToast("音声入力中... 話してください");
+      };
+
+      recognition.onerror = (e) => {
+        console.error(e);
+        stopVoiceInput();
+        showToast("音声入力エラーが発生しました");
+      };
+
+      recognition.onend = () => {
+        stopVoiceInput();
+      };
+
+      recognition.onresult = (event) => {
+        let textResult = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            textResult += event.results[i][0].transcript;
+          }
+        }
+        
+        if (textResult) {
+          insertVoiceText(textResult);
+        }
+      };
+
+      recognition.start();
+    }
+
+    function stopVoiceInput() {
+      if (recognition) {
+        recognition.stop();
+      }
+      isRecording = false;
+      voicePulse.style.display = 'none';
+      voiceBtn.classList.remove('active');
+      showToast("音声入力を停止しました");
+    }
+
+    function insertVoiceText(text) {
+      editor.focus();
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const textNode = document.createTextNode(text + " ");
+        range.insertNode(textNode);
+        
+        // Move selection to end
+        range.setStartAfter(textNode);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        editor.appendChild(document.createTextNode(text + " "));
+      }
+      saveContentDebounced();
+      updateStats();
+    }
+
+    // --- Keybindings Manager ---
+    function setupKeybinds() {
+      window.addEventListener('keydown', (e) => {
+        // Alt + Plus: Increase Text
+        if (e.altKey && (e.key === '+' || e.key === '=')) {
+          e.preventDefault();
+          adjustFontSize(2);
+        }
+        // Alt + Minus: Decrease Text
+        if (e.altKey && e.key === '-') {
+          e.preventDefault();
+          adjustFontSize(-2);
+        }
+        // Alt + V: Speech Recognition Toggle
+        if (e.altKey && (e.key === 'v' || e.key === 'V' || e.key === 'r' || e.key === 'R')) {
+          e.preventDefault();
+          toggleVoiceInput();
+        }
+      });
+    }
+
+    // --- Toast Notifications ---
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      
+      toastMsg.innerText = message;
+      toast.classList.add('show');
+      
+      // Clear previous timeout if exists
+      if (window.toastTimeout) {
+        clearTimeout(window.toastTimeout);
+      }
+      
+      window.toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // --- Document Reset ---
+    async function confirmReset() {
+      if (confirm("全ての入力内容、画像、および設定を完全に消去しますか？")) {
+        editor.innerHTML = '';
+        state = {
+          theme: 'carbon',
+          font: 'sans',
+          fontSize: 18,
+          lineHeight: 1.6,
+          bold: false,
+          toolbarPinned: true
+        };
+        applyAllStyles();
+        
+        if (db) {
+          await clearDB();
+        } else {
+          localStorage.removeItem('brnote_content');
+          localStorage.removeItem('brnote_settings');
+        }
+        updateStats();
+        showToast("リセット完了しました");
+      }
+    }
+
+    // --- Word & Character Stats ---
+    function updateStats() {
+      let text = (editor.innerText || '').replace(/\u200B/g, '');
+      
+      // If visually empty (no text content and no images), force 0
+      if (!editor.textContent.trim() && !editor.querySelector('img')) {
+        document.getElementById('char-count').innerText = "文字数: 0";
+        document.getElementById('word-count').innerText = "単語数: 0";
+        return;
+      }
+
+      // Chrome adds a trailing newline in contenteditable innerText, strip it
+      if (text.endsWith('\n')) {
+        text = text.slice(0, -1);
+      }
+      
+      const charCount = text.length;
+      const cleanText = text.trim().replace(/\s+/g, ' ');
+      const wordCount = cleanText ? cleanText.split(/\s+/).length : 0;
+      
+      document.getElementById('char-count').innerText = `文字数: ${charCount}`;
+      document.getElementById('word-count').innerText = `単語数: ${wordCount}`;
+    }
+
+    // --- Help Modal Handles ---
+    function openHelpModal() {
+      document.getElementById('help-modal').classList.add('open');
+    }
+
+    function closeHelpModal() {
+      document.getElementById('help-modal').classList.remove('open');
+    }
+
+    // --- Self-packaged HTML Serialization (TiddlyWiki-style Saving) ---
+    function downloadSelf() {
+      // Read current full DOM source code
+      const currentHTML = editor.innerHTML;
+      
+      // We search for the baked content position or replace/inject it clean
+      // Let's create a perfect fresh file contents string by getting raw source and baking the template:
+      fetch(window.location.href)
+        .then(response => {
+          if (!response.ok) throw new Error();
+          return response.text();
+        })
+        .catch(() => {
+          // Fallback if running offline as raw file without server
+          return document.documentElement.outerHTML;
+        })
+        .then(source => {
+          // Replace config states in dataset to bake current preferences
+          let bakedSource = source;
+          
+          // Regex replacements for configuration defaults so that they boot with current styling defaults
+          bakedSource = bakedSource.replace(/data-saved-theme="[^"]*"/, `data-saved-theme="${state.theme}"`);
+          bakedSource = bakedSource.replace(/data-saved-font="[^"]*"/, `data-saved-font="${state.font}"`);
+          bakedSource = bakedSource.replace(/data-saved-size="[^"]*"/, `data-saved-size="${state.fontSize}px"`);
+          bakedSource = bakedSource.replace(/data-saved-height="[^"]*"/, `data-saved-height="${state.lineHeight}"`);
+          bakedSource = bakedSource.replace(/data-saved-bold="[^"]*"/, `data-saved-bold="${state.bold}"`);
+
+          // Inject current innerHTML into the editor slot
+          const editorSearch = /<div class="editor" id="editor"[^>]*>([\s\S]*?)<\/div>/;
+          bakedSource = bakedSource.replace(editorSearch, `<div class="editor" id="editor" contenteditable="true" spellcheck="false">${currentHTML}</div>`);
+
+          // package into downloadable Blob
+          const blob = new Blob([bakedSource], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `brnote_${new Date().toISOString().slice(0,10)}.html`;
+          document.body.appendChild(a);
+          a.click();
+          
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 0);
+          
+          showToast("ファイルがダウンロードされました！");
+        });
+    }
+
+    // --- Generate Bookmarklet Link ---
+    function generateBookmarklet() {
+      // Generates a bookmarklet loader that opens a clean data:text/html page of the editor
+      bookmarkletLink.href = window.location.href;
+    }
+
+    // --- Toggle Full-Screen Wide Width Layout ---
+    function toggleWidthMode() {
+      state.fullWidth = !state.fullWidth;
+      applyAllStyles();
+      saveConfigToStorage();
+      showToast(state.fullWidth ? "全画面表示に切り替えました" : "標準表示に切り替えました");
+    }
+
+    // --- Insert Columns Row Layout ---
+    function insertColumnRow() {
+      editor.focus();
+      
+      const row = document.createElement('div');
+      row.className = 'column-row';
+      row.contentEditable = 'false';
+      
+      const leftCol = document.createElement('div');
+      leftCol.className = 'column-cell';
+      leftCol.contentEditable = 'true';
+      leftCol.style.width = '50%';
+      leftCol.setAttribute('data-placeholder', '左カラム (入力・ペースト可)...');
+      leftCol.addEventListener('input', () => {
+        saveContentDebounced();
+        updateStats();
+      });
+      
+      const divider = document.createElement('div');
+      divider.className = 'column-divider';
+      
+      const rightCol = document.createElement('div');
+      rightCol.className = 'column-cell';
+      rightCol.contentEditable = 'true';
+      rightCol.style.width = '50%';
+      rightCol.setAttribute('data-placeholder', '右カラム (入力・ペースト可)...');
+      rightCol.addEventListener('input', () => {
+        saveContentDebounced();
+        updateStats();
+      });
+      
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn';
+      delBtn.innerText = '×';
+      delBtn.addEventListener('click', () => {
+        row.remove();
+        saveContentDebounced();
+        updateStats();
+      });
+      
+      row.appendChild(leftCol);
+      row.appendChild(divider);
+      row.appendChild(rightCol);
+      row.appendChild(delBtn);
+      
+      // Insert at selection
+      const sel = window.getSelection();
+      if (sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.insertNode(row);
+        range.collapse(false);
+        
+        // Add single spacer sibling to enable clean typing below row
+        const spacer = document.createTextNode('\u00A0');
+        editor.appendChild(spacer);
+        range.setStartAfter(row);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else {
+        editor.appendChild(row);
+      }
+      
+      saveContentDebounced();
+      updateStats();
+      showToast("2列カラムを挿入しました");
+    }
+
+    // --- Drag-to-Resize Column & Image Drag Handlers ---
+    function setupResizeAndDividerListeners() {
+      // Mouse listeners for dynamic layouts
+      document.addEventListener('mousedown', (e) => {
+        // 1. Column split divider resizing
+        if (e.target.classList.contains('column-divider')) {
+          e.preventDefault();
+          const divider = e.target;
+          const row = divider.closest('.column-row');
+          const leftCell = divider.previousElementSibling;
+          const rightCell = divider.nextElementSibling;
+          
+          const startX = e.clientX;
+          const leftStartWidth = leftCell.getBoundingClientRect().width;
+          const rightStartWidth = rightCell.getBoundingClientRect().width;
+          const totalWidth = row.getBoundingClientRect().width;
+          
+          const onMouseMove = (moveEvent) => {
+            const deltaX = moveEvent.clientX - startX;
+            const leftNewWidth = leftStartWidth + deltaX;
+            const rightNewWidth = rightStartWidth - deltaX;
+            
+            if (leftNewWidth > 50 && rightNewWidth > 50) {
+              const leftPercent = (leftNewWidth / totalWidth) * 100;
+              const rightPercent = (rightNewWidth / totalWidth) * 100;
+              leftCell.style.width = `${leftPercent}%`;
+              rightCell.style.width = `${rightPercent}%`;
+            }
+          };
+          
+          const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            saveContentDebounced();
+          };
+          
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        }
+        
+        // 2. Image block bottom-right corner resizing
+        if (e.target.classList.contains('image-resize-handle')) {
+          e.preventDefault();
+          const handle = e.target;
+          const imgBlock = handle.closest('.image-block');
+          
+          const startX = e.clientX;
+          const startWidth = imgBlock.getBoundingClientRect().width;
+          const parentWidth = imgBlock.parentElement.getBoundingClientRect().width;
+          
+          const onMouseMove = (moveEvent) => {
+            const deltaX = moveEvent.clientX - startX;
+            const newWidth = Math.max(80, Math.min(parentWidth, startWidth + deltaX));
+            imgBlock.style.width = `${newWidth}px`;
+          };
+          
+          const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            saveContentDebounced();
+          };
+          
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        }
+      });
+
+      // 3. Delegate key and comment edits inside sub-cards to trigger db saves
+      editor.addEventListener('input', (e) => {
+        if (e.target.classList.contains('image-comment')) {
+          saveContentDebounced();
+        }
+      });
+
+      // 4. Global click delegates (custom buttons, delete, image alignments)
+      document.addEventListener('click', (e) => {
+        // A. Custom action buttons
+        const actionBtn = e.target.closest('.custom-action-btn');
+        if (actionBtn) {
+          e.stopPropagation();
+          handleCustomButtonClick(actionBtn);
+          return;
+        }
+
+        // B. Image Block delete button
+        const delBtn = e.target.closest('.image-block > .delete-btn');
+        if (delBtn) {
+          e.stopPropagation();
+          const imgBlock = delBtn.closest('.image-block');
+          if (imgBlock) {
+            imgBlock.remove();
+            saveContentDebounced();
+            updateStats();
+          }
+          return;
+        }
+
+        // C. Image alignment buttons
+        const controlBtn = e.target.closest('.image-controls > .control-btn');
+        if (controlBtn) {
+          e.stopPropagation();
+          const imgBlock = controlBtn.closest('.image-block');
+          const align = controlBtn.dataset.align;
+          
+          if (imgBlock && align) {
+            // Remove previous alignment classes
+            imgBlock.classList.remove('align-left', 'align-center', 'align-right');
+            // Add new alignment class
+            imgBlock.classList.add(`align-${align}`);
+            imgBlock.dataset.align = align;
+
+            // Update active state in UI
+            const controls = controlBtn.parentElement;
+            controls.querySelectorAll('.control-btn').forEach(btn => {
+              btn.classList.toggle('active', btn === controlBtn);
+            });
+
+            saveContentDebounced();
+          }
+          return;
+        }
+      });
+
+      // 5. Image Drag & Drop Reordering Logic
+      editor.addEventListener('dragstart', (e) => {
+        const imgBlock = e.target.closest('.image-block');
+        if (imgBlock) {
+          e.dataTransfer.setData('text/plain', ''); // Firefox support
+          state.draggedBlock = imgBlock;
+          imgBlock.style.opacity = '0.5';
+        }
+      });
+
+      editor.addEventListener('dragend', (e) => {
+        const imgBlock = e.target.closest('.image-block');
+        if (imgBlock) {
+          imgBlock.style.opacity = '1.0';
+        }
+      });
+
+      editor.addEventListener('dragover', (e) => {
+        if (state.draggedBlock) {
+          e.preventDefault(); // Enable drop
+        }
+      });
+
+      editor.addEventListener('drop', (e) => {
+        if (state.draggedBlock) {
+          e.preventDefault();
+          
+          let range = null;
+          if (document.caretRangeFromPoint) {
+            range = document.caretRangeFromPoint(e.clientX, e.clientY);
+          } else if (e.rangeParent) {
+            range = document.createRange();
+            range.setStart(e.rangeParent, e.rangeOffset);
+            range.collapse(true);
+          }
+          
+          if (range) {
+            const dropTarget = range.startContainer.parentElement;
+            // Prevent drop inside a comment block or drop outside the editor
+            if (dropTarget && !dropTarget.closest('.image-comment') && editor.contains(dropTarget)) {
+              range.insertNode(state.draggedBlock);
+              state.draggedBlock.style.opacity = '1.0';
+              state.draggedBlock = null;
+              saveContentDebounced();
+            }
+          }
+        }
+      });
+    }
+
+    // --- Copy Editor Raw Text to Clipboard ---
+    function copyAllText() {
+      const text = editor.innerText || "";
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("すべてのテキストをコピーしました");
+        }).catch(() => {
+          fallbackCopyText(text);
+        });
+      } else {
+        fallbackCopyText(text);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          showToast("すべてのテキストをコピーしました");
+        } else {
+          showToast("コピーできませんでした");
+        }
+      } catch (err) {
+        console.error("Fallback copy failed:", err);
+        showToast("コピーできませんでした");
+      }
+    }
+
+    // --- Download Editor Content as plain text (.txt) ---
+    function downloadAsText() {
+      const text = editor.innerText || "";
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      triggerFileDownload(blob, `brnote_${new Date().toISOString().slice(0,10)}.txt`);
+    }
+
+    // --- Download Editor Content as clean Markdown (.md) ---
+    function downloadAsMarkdown() {
+      let markdown = "";
+      
+      const nodes = editor.childNodes;
+      nodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          markdown += node.textContent;
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.classList.contains('image-block')) {
+            const img = node.querySelector('img');
+            const comment = node.querySelector('.image-comment');
+            const imgSrc = img ? img.src : '';
+            const commentText = comment ? comment.innerText.trim() : '';
+            
+            markdown += `\n\n![Pasted Image](${imgSrc})\n`;
+            if (commentText) {
+              markdown += `*コメント: ${commentText}*\n\n`;
+            }
+          } else if (node.classList.contains('column-row')) {
+            const cells = node.querySelectorAll('.column-cell');
+            markdown += `\n\n| カラム1 | カラム2 |\n| --- | --- |\n`;
+            const col1 = cells[0] ? cells[0].innerText.replace(/\n/g, '<br>') : '';
+            const col2 = cells[1] ? cells[1].innerText.replace(/\n/g, '<br>') : '';
+            markdown += `| ${col1} | ${col2} |\n\n`;
+          } else if (node.classList.contains('btn-wrapper')) {
+            const btn = node.querySelector('.custom-action-btn');
+            if (btn) {
+              markdown += ` [${btn.innerText}] `;
+            }
+          } else {
+            let html = node.innerHTML;
+            // Basic tag conversions
+            html = html.replace(/<b>(.*?)<\/b>/g, '**$1**');
+            html = html.replace(/<strong>(.*?)<\/strong>/g, '**$1**');
+            html = html.replace(/<i>(.*?)<\/i>/g, '*$1*');
+            html = html.replace(/<em>(.*?)<\/em>/g, '*$1*');
+            
+            const temp = document.createElement('div');
+            temp.innerHTML = html;
+            markdown += temp.innerText + '\n';
+          }
+        }
+      });
+
+      const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
+      triggerFileDownload(blob, `brnote_${new Date().toISOString().slice(0,10)}.md`);
+    }
+
+    // Helper download trigger
+    function triggerFileDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 0);
+      showToast("ファイルがダウンロードされました！");
+    }
+  </script>
+</body>
+</html>
