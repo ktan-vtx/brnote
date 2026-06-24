@@ -775,6 +775,31 @@
       background: rgba(var(--accent-rgb), 0.2);
     }
 
+    .sidebar-item-rename {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      opacity: 0;
+      transition: all 0.2s ease;
+      margin-right: 4px;
+    }
+
+    .sidebar-item:hover .sidebar-item-rename {
+      opacity: 1;
+    }
+
+    .sidebar-item-rename:hover {
+      background: rgba(var(--accent-rgb), 0.2);
+    }
+
     /* --- Speech & Status Indicator --- */
     .recording-pulse {
       position: absolute;
@@ -2050,6 +2075,12 @@
       // 3. Update metadata
       const noteMeta = state.notesList.find(n => n.id === state.currentNoteId);
       if (noteMeta) {
+        if (noteMeta.isCustomTitle) {
+          noteMeta.updatedAt = Date.now();
+          await saveNotesListToStorage();
+          return;
+        }
+
         const titleChanged = noteMeta.title !== title;
         noteMeta.title = title;
         noteMeta.updatedAt = Date.now();
@@ -2120,6 +2151,15 @@
           togglePinNote(note.id);
         });
 
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'sidebar-item-rename';
+        renameBtn.innerHTML = '✏️';
+        renameBtn.setAttribute('title', '名前を変更');
+        renameBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          renameNote(note.id);
+        });
+
         const delBtn = document.createElement('button');
         delBtn.className = 'sidebar-item-delete';
         delBtn.innerHTML = '×';
@@ -2131,6 +2171,7 @@
 
         item.appendChild(titleEl);
         item.appendChild(pinBtn);
+        item.appendChild(renameBtn);
         item.appendChild(delBtn);
         listEl.appendChild(item);
       });
@@ -2143,6 +2184,28 @@
         await saveNotesListToStorage();
         renderSidebarList();
       }
+    }
+
+    async function renameNote(id) {
+      const note = state.notesList.find(n => n.id === id);
+      if (!note) return;
+
+      const newTitle = prompt("新しいタイトルを入力してください:", note.title);
+      if (newTitle === null) return;
+
+      const trimmedTitle = newTitle.trim().substring(0, 30);
+      if (trimmedTitle.length === 0) {
+        showToast("タイトルを入力してください");
+        return;
+      }
+
+      note.title = trimmedTitle;
+      note.isCustomTitle = true;
+      note.updatedAt = Date.now();
+
+      await saveNotesListToStorage();
+      renderSidebarList();
+      showToast("タイトルを変更しました");
     }
 
     function getTimestampString() {
