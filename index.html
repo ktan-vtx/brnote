@@ -2133,12 +2133,9 @@
     }
 
     async function deleteNote(id) {
-      if (state.notesList.length <= 1) {
-        showToast("最後のメモは削除できません");
-        return;
-      }
-
       if (!confirm("このメモを削除しますか？")) return;
+
+      const isLastNote = state.notesList.length <= 1;
 
       state.notesList = state.notesList.filter(n => n.id !== id);
 
@@ -2148,22 +2145,44 @@
         localStorage.removeItem('note_' + id);
       }
 
-      await saveNotesListToStorage();
+      if (isLastNote) {
+        const newId = Date.now().toString();
+        const newNote = {
+          id: newId,
+          title: "新規メモ",
+          updatedAt: Date.now()
+        };
+        state.notesList = [newNote];
+        state.currentNoteId = newId;
 
-      if (state.currentNoteId === id) {
-        state.currentNoteId = state.notesList[0].id;
-        await saveCurrentNoteIdToStorage();
-        
-        let noteContent = null;
         if (db) {
-          noteContent = await getDBValue('note_' + state.currentNoteId);
+          await setDBValue('note_' + newId, '');
         } else {
-          noteContent = localStorage.getItem('note_' + state.currentNoteId);
+          localStorage.setItem('note_' + newId, '');
         }
-        editor.innerHTML = noteContent || '';
-        editor.querySelectorAll('.image-block').forEach(imgBlock => {
-          imgBlock.draggable = true;
-        });
+        
+        await saveNotesListToStorage();
+        await saveCurrentNoteIdToStorage();
+
+        editor.innerHTML = '';
+      } else {
+        await saveNotesListToStorage();
+
+        if (state.currentNoteId === id) {
+          state.currentNoteId = state.notesList[0].id;
+          await saveCurrentNoteIdToStorage();
+          
+          let noteContent = null;
+          if (db) {
+            noteContent = await getDBValue('note_' + state.currentNoteId);
+          } else {
+            noteContent = localStorage.getItem('note_' + state.currentNoteId);
+          }
+          editor.innerHTML = noteContent || '';
+          editor.querySelectorAll('.image-block').forEach(imgBlock => {
+            imgBlock.draggable = true;
+          });
+        }
       }
 
       renderSidebarList();
