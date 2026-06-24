@@ -469,6 +469,73 @@
       transform: scale(1.05);
     }
 
+    /* Floating Info Button (Bottom Left) */
+    .info-btn {
+      position: fixed;
+      bottom: 16px;
+      left: 24px;
+      width: 36px;
+      height: 36px;
+      background-color: var(--toolbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 101;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
+
+    .info-btn:hover {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      transform: scale(1.05);
+    }
+
+    .info-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .info-btn.hidden {
+      transform: translateY(60px);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Tooltip styling for info-btn */
+    .info-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-4px);
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--toolbar-border);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .info-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* --- Speech & Status Indicator --- */
     .recording-pulse {
       position: absolute;
@@ -1075,6 +1142,13 @@
        data-saved-bold="false">
   </div>
 
+  <!-- Floating Info Button (Bottom Left) -->
+  <button class="info-btn" id="info-btn" onclick="openHelpModal()" data-tooltip="ヘルプ/情報" title="ヘルプ/情報" aria-label="情報">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+    </svg>
+  </button>
+
   <!-- Toolbar Toggle Trigger -->
   <div class="toolbar-toggle-handle" id="toolbar-toggle" title="ツールバーを隠す">
     <svg viewBox="0 0 24 24" id="toggle-chevron" style="width:16px; height:16px; fill:currentColor; transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -1235,13 +1309,6 @@
           </svg>
         </button>
 
-        <!-- Info / Help -->
-        <button class="tool-btn" onclick="openHelpModal()" data-tooltip="ヘルプ/情報" title="ヘルプ/情報" aria-label="情報">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-          </svg>
-        </button>
-
       </div>
 
     </div>
@@ -1343,6 +1410,12 @@
           以下のボタンをブックマークバーにドラッグ＆ドロップすると、いつでもどこからでも瞬時にこのメモ帳を開けます。
         </div>
         <a class="bookmarklet-link" id="bookmarklet-link" href="#" onclick="return false;">brnote</a>
+      </div>
+
+      <!-- GitHub Repository Link -->
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--toolbar-border); display: flex; align-items: center; justify-content: space-between;">
+        <span style="font-size: 12px; color: var(--text-secondary); font-weight: 500;">オープンソース・プロジェクト</span>
+        <a href="https://github.com/ktan-vtx/brnote" target="_blank" class="bookmarklet-link" style="margin-top: 0; font-size: 11px; padding: 6px 14px; text-decoration: none; border-radius: 20px; font-weight: 600;">GitHubで見る</a>
       </div>
 
       <div class="modal-buttons">
@@ -1599,12 +1672,15 @@
       // Pin class updates & toggle chevron arrow rotation
       const chevron = document.getElementById('toggle-chevron');
       const toggle = document.getElementById('toolbar-toggle');
+      const infoBtn = document.getElementById('info-btn');
       if (!state.toolbarPinned) {
         toolbarWrapper.classList.add('hidden');
+        if (infoBtn) infoBtn.classList.add('hidden');
         if (chevron) chevron.style.transform = 'rotate(180deg)';
         if (toggle) toggle.setAttribute('title', "ツールバーを表示");
       } else {
         toolbarWrapper.classList.remove('hidden');
+        if (infoBtn) infoBtn.classList.remove('hidden');
         if (chevron) chevron.style.transform = 'rotate(0deg)';
         if (toggle) toggle.setAttribute('title', "ツールバーを隠す");
       }
@@ -1698,13 +1774,16 @@
     function handleToolbarHoverTrigger(e) {
       if (state.toolbarPinned) return;
       
+      const infoBtn = document.getElementById('info-btn');
       // Reveal toolbar when mouse is near the top (top 45px)
       if (e.clientY < 45) {
         toolbarWrapper.classList.remove('hidden');
+        if (infoBtn) infoBtn.classList.remove('hidden');
       } else {
         // Hide it if we are not hovering elements inside it
         if (!toolbarWrapper.contains(e.target) && !e.target.classList.contains('toolbar-toggle-handle')) {
           toolbarWrapper.classList.add('hidden');
+          if (infoBtn) infoBtn.classList.add('hidden');
         }
       }
     }
