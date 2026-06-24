@@ -2418,13 +2418,45 @@
       });
 
       editor.addEventListener('dragover', (e) => {
-        if (state.draggedBlock) {
+        const isFileDrag = e.dataTransfer.types.includes('Files');
+        if (state.draggedBlock || isFileDrag) {
           e.preventDefault(); // Enable drop
         }
       });
 
       editor.addEventListener('drop', (e) => {
-        if (state.draggedBlock) {
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          // A. Handle file drops (drag and drop from local system)
+          e.preventDefault();
+          
+          let range = null;
+          if (document.caretRangeFromPoint) {
+            range = document.caretRangeFromPoint(e.clientX, e.clientY);
+          } else if (e.rangeParent) {
+            range = document.createRange();
+            range.setStart(e.rangeParent, e.rangeOffset);
+            range.collapse(true);
+          }
+          
+          if (range) {
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+
+          for (const file of files) {
+            if (file.type.startsWith('image/')) {
+              const reader = new FileReader();
+              reader.onload = (evt) => {
+                insertImageBlock(evt.target.result);
+              };
+              reader.readAsDataURL(file);
+              break; // Process only the first image dropped
+            }
+          }
+        } else if (state.draggedBlock) {
+          // B. Handle internal image blocks reordering drag-and-drop
           e.preventDefault();
           
           let range = null;
