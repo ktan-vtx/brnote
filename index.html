@@ -745,6 +745,36 @@
       color: white;
     }
 
+    .sidebar-item-pin {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      opacity: 0;
+      transition: all 0.2s ease;
+      margin-right: 4px;
+    }
+
+    .sidebar-item-pin.pinned {
+      opacity: 1;
+      color: var(--accent-color);
+    }
+
+    .sidebar-item:hover .sidebar-item-pin {
+      opacity: 1;
+    }
+
+    .sidebar-item-pin:hover {
+      background: rgba(var(--accent-rgb), 0.2);
+    }
+
     /* --- Speech & Status Indicator --- */
     .recording-pulse {
       position: absolute;
@@ -2051,7 +2081,14 @@
       if (!listEl) return;
       listEl.innerHTML = '';
       
-      const sortedList = [...state.notesList].sort((a, b) => b.updatedAt - a.updatedAt);
+      const sortedList = [...state.notesList].sort((a, b) => {
+        const aPinned = a.pinned ? 1 : 0;
+        const bPinned = b.pinned ? 1 : 0;
+        if (aPinned !== bPinned) {
+          return bPinned - aPinned;
+        }
+        return b.updatedAt - a.updatedAt;
+      });
 
       sortedList.forEach(note => {
         const item = document.createElement('div');
@@ -2068,6 +2105,21 @@
         titleEl.className = 'sidebar-item-title';
         titleEl.innerText = note.title || '無題のメモ';
 
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'sidebar-item-pin';
+        if (note.pinned) {
+          pinBtn.classList.add('pinned');
+          pinBtn.innerHTML = '📌';
+          pinBtn.setAttribute('title', 'ピン留めを解除');
+        } else {
+          pinBtn.innerHTML = '📍';
+          pinBtn.setAttribute('title', 'ピン留めする');
+        }
+        pinBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePinNote(note.id);
+        });
+
         const delBtn = document.createElement('button');
         delBtn.className = 'sidebar-item-delete';
         delBtn.innerHTML = '×';
@@ -2078,9 +2130,19 @@
         });
 
         item.appendChild(titleEl);
+        item.appendChild(pinBtn);
         item.appendChild(delBtn);
         listEl.appendChild(item);
       });
+    }
+
+    async function togglePinNote(id) {
+      const note = state.notesList.find(n => n.id === id);
+      if (note) {
+        note.pinned = !note.pinned;
+        await saveNotesListToStorage();
+        renderSidebarList();
+      }
     }
 
     function getTimestampString() {
