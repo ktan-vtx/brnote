@@ -1917,6 +1917,7 @@
     const lhBtn = document.getElementById('lh-btn');
 
     let recognition = null;
+    let isRecording = false;
     let isEditMode = false;
     let selectedNoteIds = new Set();
 
@@ -1993,18 +1994,18 @@
         await saveCurrentNoteIdToStorage();
       }
 
-      // B. Create a welcome note if no notes exist
+      // B. Create a blank note if no notes exist
       if (state.notesList.length === 0) {
         const initialId = Date.now().toString();
         const initialNote = {
           id: initialId,
-          title: 'はじめに',
+          title: getTimestampString(),
           updatedAt: Date.now()
         };
         state.notesList.push(initialNote);
         state.currentNoteId = initialId;
 
-        const defaultWelcomeText = `<div><h1>brnote へようこそ！</h1><p>これはあなた専用の美しいスクラッチパッドメモ帳です。左上のメニューボタン（三本線）から、新しいノートを追加して複数管理することができます。</p><p>この文章を消して、自由に書き始めてください！</p></div>`;
+        const defaultWelcomeText = '';
         
         if (db) {
           await setDBValue('note_' + initialId, defaultWelcomeText);
@@ -2070,6 +2071,9 @@
 
       // Drag resize listener initializer
       setupResizeAndDividerListeners();
+
+      // Focus the editor automatically so the user can start taking notes immediately
+      editor.focus();
     });
 
     // --- Configuration State Management ---
@@ -2974,13 +2978,37 @@
       };
 
       recognition.onerror = (e) => {
-        console.error(e);
+        console.error("Speech Recognition Error:", e);
+        if (e.error === 'no-speech') {
+          // Ignore no-speech error; onend handles restarting the session automatically if isRecording is true
+          return;
+        }
         stopVoiceInput();
-        showToast("音声入力エラーが発生しました");
+        if (e.error === 'not-allowed') {
+          showToast("マイクの使用が許可されていません");
+        } else if (e.error === 'network') {
+          showToast("ネットワーク接続エラーが発生しました");
+        } else {
+          showToast("音声入力エラーが発生しました (" + e.error + ")");
+        }
       };
 
       recognition.onend = () => {
-        stopVoiceInput();
+        if (isRecording) {
+          // Restart recognition if user didn't explicitly stop it (safeguard for silence timeout)
+          setTimeout(() => {
+            if (isRecording) {
+              try {
+                recognition.start();
+              } catch (err) {
+                console.error("Failed to restart speech recognition:", err);
+                stopVoiceInput();
+              }
+            }
+          }, 100);
+        } else {
+          stopVoiceInput();
+        }
       };
 
       recognition.onresult = (event) => {
@@ -3000,10 +3028,14 @@
     }
 
     function stopVoiceInput() {
+      isRecording = false; // Set flag to false BEFORE calling stop to prevent auto-restart in onend
       if (recognition) {
-        recognition.stop();
+        try {
+          recognition.stop();
+        } catch (e) {
+          console.error("Error stopping speech recognition:", e);
+        }
       }
-      isRecording = false;
       voicePulse.style.display = 'none';
       voiceBtn.classList.remove('active');
       showToast("音声入力を停止しました");
